@@ -13,7 +13,7 @@ builderServices.AddEndpointsApiExplorer();
 builderServices.AddSwaggerGen();
 builderServices.ConfigureCorsPolicy();
 builderServices.AddControllers();
-//builder.AddUserContext();
+builder.AddUserContext();
 builder.AddDatabase();
 builder.AddSwaggerDoc();
 builder.AddAuthPolicy();
@@ -27,12 +27,12 @@ app.UseRewriter(options);
 
 app.UseSwagger();
 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "User Api v1"));
-//app.UseErrorHandler();
+app.UseErrorHandler();
 app.UseHttpsRedirection();
 app.UseCors();
 app.MapControllers();
 app.UseAuthentication();
 app.UseAuthorization();
-//app.MapUserEndpoints();
+app.MapUserEndpoints();
 
 app.Run();

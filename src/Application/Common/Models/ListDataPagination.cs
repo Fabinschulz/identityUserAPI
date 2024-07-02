@@ -1,5 +1,4 @@
-﻿using IdentityUser.src.Domain.Settings;
-
+﻿
 namespace IdentityUser.src.Application.Common.Models
 {
     public class ListDataPagination<T>
@@ -9,11 +8,11 @@ namespace IdentityUser.src.Application.Common.Models
         public int TotalItems { get; set; } = 0;
         public List<T> Data { get; set; } = new List<T>();
 
-        public ListDataPagination(List<T> data, int page, int totalPages, int totalItems)
+        public ListDataPagination(List<T> data, int page, int size, int totalItems)
         {
             Data = data ?? new List<T>();
             Page = page;
-            TotalPages = totalPages;
+            TotalPages = size;
             TotalItems = totalItems;
         }
     }

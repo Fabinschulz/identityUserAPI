@@ -6,15 +6,15 @@ using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
 using IdentityUser.src.Infra.Services.PasswordService;
 using IdentityUser.src.Infra.Services.TokenServices;
-using IdentityUser.src.Application.Exceptions;
 using IdentityUser.src.Application.Common.Models;
+using IdentityUser.src.Application.Common.Exceptions;
 
 namespace IdentityUser.src.Infra.Repositories
 {
     public class UserRepository : BaseRepository<User>, IUserRepository
     {
 
-        public UserRepository(ApplicationDbContext context) : base(context)
+        public UserRepository(AppDbContext context) : base(context)
         {
         }
 
@@ -127,13 +127,7 @@ namespace IdentityUser.src.Infra.Repositories
 
             var data = await query.Skip((page - 1) * size).Take(size).ToListAsync();
 
-            return new ListDataPagination<User>
-            {
-                Page = page,
-                TotalPages = totalPages,
-                TotalItems = totalItems,
-                Data = data
-            };
+            return new ListDataPagination<User>(data, page, size, totalItems);
         }
 
         private void ApplyUsernameFilter(ref IQueryable<User> query, string? username)

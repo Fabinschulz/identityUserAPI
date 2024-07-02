@@ -12,13 +12,13 @@ namespace IdentityUser.src.Application.Common.Response
         public PagedResponse(
             List<T> data,
             int page,
-            int totalPages,
+            int size,
             int totalItems,
             string? message = null,
-            int code = Configuration.DefaultStatusCode) : base(data, page, totalPages, totalItems, message, code: code)
+            int code = Configuration.DefaultStatusCode) : base(data, page, size, totalItems, message, code: code)
         {
             CurrentPage = page;
-            PageSize = totalPages;
+            PageSize = size;
             TotalCount = totalItems;
         }
 

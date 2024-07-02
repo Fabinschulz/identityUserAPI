@@ -1,6 +1,7 @@
-﻿namespace IdentityUser.src.Application.Requests
+﻿using IdentityUser.src.Application.Queries;
+using MediatR;
+
+namespace IdentityUser.src.Application.Requests
 {
-    public class GetUserByIdCommand
-    {
-    }
+    public sealed record GetUserByIdCommand(Guid Id) : IRequest<GetUserByIdQuery>;
 }

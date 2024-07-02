@@ -7,9 +7,9 @@ namespace IdentityUser.src.Infra.Repositories
 {
     public class BaseRepository<T> : IBaseRepository<T> where T : BaseEntity
     {
-        protected readonly ApplicationDbContext _context;
+        protected readonly AppDbContext _context;
 
-        public BaseRepository(ApplicationDbContext context)
+        public BaseRepository(AppDbContext context)
         {
             _context = context;
         }

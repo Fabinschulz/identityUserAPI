@@ -1,6 +1,8 @@
 ﻿using FluentValidation;
 using IdentityUser.src.Application.Common.Behaviors;
+using IdentityUser.src.Domain.Interfaces;
 using IdentityUser.src.Infra.Persistence;
+using IdentityUser.src.Infra.Repositories;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -14,9 +16,15 @@ namespace IdentityUser.src.Infra
 {
     public static class DependencyInjection
     {
+        public static void AddUserContext(this WebApplicationBuilder builder)
+        {
+            builder.Services.AddTransient<UserRepository>();
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
+        }
+
         public static void AddDatabase(this WebApplicationBuilder builder)
         {
-            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+            builder.Services.AddDbContext<AppDbContext>(options =>
             {
                 options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
@@ -96,7 +104,7 @@ namespace IdentityUser.src.Infra
         public static void ConfigureServices(this IServiceCollection services)
         {
             services.AddAutoMapper(typeof(Program));
-            services.AddMediatR(typeof(Program));
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
@@ -106,15 +114,15 @@ namespace IdentityUser.src.Infra
                 var serviceProvider = scope.ServiceProvider;
                 try
                 {
-                    var context = serviceProvider.GetRequiredService<ApplicationDbContext>();
-                    var logger = serviceProvider.GetRequiredService<ILogger<ApplicationDbContext>>();
+                    var context = serviceProvider.GetRequiredService<AppDbContext>();
+                    var logger = serviceProvider.GetRequiredService<ILogger<AppDbContext>>();
 
                     context.Database.Migrate();
                     logger.LogInformation("Migração do banco de dados concluída com sucesso.");
                 }
                 catch (Exception ex)
                 {
-                    var logger = serviceProvider.GetRequiredService<ILogger<ApplicationDbContext>>();
+                    var logger = serviceProvider.GetRequiredService<ILogger<AppDbContext>>();
                     logger.LogError(ex, "Erro durante a migração do banco de dados.");
                     throw new Exception("Erro durante a migração do banco de dados.", ex);
                 }

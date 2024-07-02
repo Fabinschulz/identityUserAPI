@@ -16,10 +16,10 @@ namespace IdentityUser.src.Application.Common.Response
         public Response(
             List<TData> data,
             int page,
-            int totalPages,
+            int size,
             int totalItems,
             string? message = null,
-            int code = Configuration.DefaultStatusCode) : base(data, page, totalPages, totalItems)
+            int code = Configuration.DefaultStatusCode) : base(data, page, size, totalItems)
         {
             Message = message;
             _code = code;

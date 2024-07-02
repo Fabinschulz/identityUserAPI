@@ -6,22 +6,21 @@ using System;
 
 namespace IdentityUser.src.Infra.Persistence
 {
-    public class ApplicationDbContext : DbContext, IApplicationDbContext
+    public class AppDbContext : DbContext, IApplicationDbContext
     {
         public DbSet<User> Users => Set<User>();
 
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>().HasKey(u => u.Id);
             modelBuilder.Entity<User>().Property(u => u.Email).IsRequired();
             modelBuilder.Entity<User>().Property(u => u.Password).IsRequired();
-            modelBuilder.Entity<User>().Property(u => u.Role).IsRequired(false);
-            modelBuilder.Entity<User>().Property(u => u.Username).IsRequired(false);
-            modelBuilder.Entity<User>().HasIndex(u => u.Email).IsUnique();
+            modelBuilder.Entity<User>().Property(u => u.Role).IsRequired(false).HasMaxLength(50).HasColumnType("varchar(50)");
+            modelBuilder.Entity<User>().Property(u => u.Username).IsRequired(false).HasMaxLength(80).HasColumnType("varchar(80)");
 
-            modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
             base.OnModelCreating(modelBuilder);
         }
 
