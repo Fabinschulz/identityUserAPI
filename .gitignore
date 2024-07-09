@@ -484,5 +484,7 @@ $RECYCLE.BIN/
 *.swp
 
 # Ignore folders MIGRATION e files .db
-MIGRATION/
+Migrations/
 *.db
+*.db-shm
+*.db-wal
