@@ -4,5 +4,12 @@ services:
     image: nouchka/sqlite3:latest
     stdin_open: true
     tty: true
+    ports:
+      - "5432:5432"
+    container_name: identity_sqlite
+    restart: always
+    # build:
+    #   context: .
+    #   dockerfile: Dockerfile
     volumes:
       - ./db/:/root/db/
