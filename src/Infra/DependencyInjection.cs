@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using IdentityUser.src.Application.Common.Behaviors;
+using IdentityUser.src.Domain.Enums;
 using IdentityUser.src.Domain.Interfaces;
 using IdentityUser.src.Infra.Persistence;
 using IdentityUser.src.Infra.Repositories;
@@ -16,6 +17,7 @@ namespace IdentityUser.src.Infra
 {
     public static class DependencyInjection
     {
+
         public static void AddUserContext(this WebApplicationBuilder builder)
         {
             builder.Services.AddTransient<UserRepository>();
@@ -107,6 +109,12 @@ namespace IdentityUser.src.Infra
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+
+            services.AddControllers()
+            .AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.Converters.Add(new RoleEnumConverter());
+            });
 
             // Add database migration during application startup
             using (var scope = services.BuildServiceProvider().CreateScope())

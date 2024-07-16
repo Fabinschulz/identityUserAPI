@@ -1,4 +1,5 @@
 ﻿using IdentityUser.src.Domain.Common;
+using IdentityUser.src.Domain.Enums;
 
 namespace IdentityUser.src.Domain.Entities
 {
@@ -7,7 +8,7 @@ namespace IdentityUser.src.Domain.Entities
         public string? Username { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
-        public string? Role { get; set; } = "User";
+        public RoleEnum? Role { get; set; } =  RoleEnum.User;
         public string Token { get; set; } = string.Empty;
 
 

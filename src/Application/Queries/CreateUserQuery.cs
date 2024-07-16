@@ -16,7 +16,7 @@ namespace IdentityUser.src.Application.Queries
                 Id = user.Id,
                 Username = user.Username,
                 Email = user.Email,
-                Role = user.Role
+                Role = user.Role.ToString()
             };
         }
     }
