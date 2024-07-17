@@ -3,13 +3,5 @@ using MediatR;
 
 namespace IdentityUser.src.Application.Requests
 {
-    public abstract class DeleteUserCommand: IRequest<DeleteUserByIdQuery>
-    {
-        public Guid Id { get; }
-
-        protected DeleteUserCommand(Guid id)
-        {
-            Id = id;
-        }
-    }
+    public sealed record DeleteUserCommand(Guid Id) : IRequest<DeleteUserByIdQuery>;
 }

@@ -23,11 +23,6 @@ namespace IdentityUser.src.Application.Handler
 
         public async Task<CreateUserQuery> Handle(CreateUserCommand request, CancellationToken cancellationToken)
         {
-            //var validationResult = await _validator.ValidateAsync(request, cancellationToken);
-            //if (!validationResult.IsValid)
-            //{
-                //throw new ValidationException(validationResult.Errors);
-            //}
 
             await ValidateRequest(request, cancellationToken);
 

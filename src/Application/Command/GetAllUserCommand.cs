@@ -4,10 +4,10 @@ using MediatR;
 namespace IdentityUser.src.Application.Requests
 {
     public sealed record GetAllUserCommand(
-        int Page, 
+        int Page,
         int Size,
         string? Username,
-        string? Email, 
+        string? Email,
         bool IsDeleted,
         string? OrderBy,
         string? Role) : IRequest<GetAllUserQuery>;

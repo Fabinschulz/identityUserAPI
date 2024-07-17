@@ -3,10 +3,12 @@
     public sealed class DeleteUserByIdQuery
     {
         public bool IsSuccess { get; }
+        public string Message { get; }
 
-        protected DeleteUserByIdQuery(bool isSuccess)
+        public DeleteUserByIdQuery(bool isSuccess, string message)
         {
             IsSuccess = isSuccess;
+            Message = message;
         }
     }
 }

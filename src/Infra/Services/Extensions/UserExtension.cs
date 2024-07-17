@@ -33,6 +33,14 @@ namespace IdentityUser.src.Infra.Services.Extensions
 
             }).WithTags("USER").WithSummary("Find a user by id");
 
+            app.MapDelete("/v1/user/{id}", async (IMediator mediator, Guid id) =>
+            {
+                var command = new DeleteUserCommand(id);
+                var user = await mediator.Send(command);
+                return Results.Ok(user);
+
+            }).WithTags("USER").WithSummary("Delete a user");
+
         }
 
     }
