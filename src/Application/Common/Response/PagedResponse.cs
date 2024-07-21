@@ -1,25 +1,20 @@
-﻿using IdentityUser.src.Domain.Settings;
+﻿using IdentityUser.src.Application.Common.Models;
 
 namespace IdentityUser.src.Application.Common.Response
 {
-    public class PagedResponse<T> : Response<T>
+    public class PagedResponse<T> where T : class
     {
-        public int CurrentPage { get; set; }
-        public int PageSize { get; set; } = Configuration.DefaultPage;
-        public int TotalCount { get; set; }
-        public int TotalPageCount => (int)System.Math.Ceiling(decimal.Divide(TotalCount, PageSize));
+        public int Page { get; set; }
+        public int TotalPages { get; set; }
+        public int TotalItems { get; set; }
+        public List<T> Data { get; set; }
 
-        public PagedResponse(
-            List<T> data,
-            int page,
-            int size,
-            int totalItems,
-            string? message = null,
-            int code = Configuration.DefaultStatusCode) : base(data, page, size, totalItems, message, code: code)
+        public PagedResponse(ListDataPagination<T> entity)
         {
-            CurrentPage = page;
-            PageSize = size;
-            TotalCount = totalItems;
+            Page = entity.Page;
+            TotalPages = entity.TotalPages;
+            TotalItems = entity.TotalItems;
+            Data = entity.Data;
         }
 
     }

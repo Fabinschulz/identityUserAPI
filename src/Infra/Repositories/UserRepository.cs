@@ -8,6 +8,7 @@ using IdentityUser.src.Infra.Services.PasswordService;
 using IdentityUser.src.Infra.Services.TokenServices;
 using IdentityUser.src.Application.Common.Models;
 using IdentityUser.src.Application.Common.Exceptions;
+using IdentityUser.src.Domain.Enums;
 
 namespace IdentityUser.src.Infra.Repositories
 {
@@ -107,14 +108,14 @@ namespace IdentityUser.src.Infra.Repositories
             return _context.Set<User>().AsQueryable();
         }
 
-        public async Task<ListDataPagination<User>> GetAll(int page, int size, string? username, string? email, bool isDeleted, string? orderBy, string? role)
+        public async Task<ListDataPagination<User>> GetAll(int page, int size, string? username, string? email, bool isDeleted, string? orderBy, RoleEnum? role)
         {
             var query = BuildBaseQuery();
 
             ApplyUsernameFilter(ref query, username);
             ApplyEmailFilter(ref query, email);
             ApplyIsDeletedFilter(ref query, isDeleted);
-            ApplyRoleFilter(ref query, role);
+            ApplyRoleFilter(ref query, role?.ToString());
 
             if (!string.IsNullOrEmpty(orderBy))
             {

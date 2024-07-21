@@ -1,10 +1,12 @@
 ﻿
+using IdentityUser.src.Domain.Settings;
+
 namespace IdentityUser.src.Application.Common.Models
 {
     public class ListDataPagination<T>
     {
         public int Page { get; set; } = 0;
-        public int TotalPages { get; set; } = 0;
+        public int TotalPages { get; set; } = Configuration.DefaultPage;
         public int TotalItems { get; set; } = 0;
         public List<T> Data { get; set; } = new List<T>();
 

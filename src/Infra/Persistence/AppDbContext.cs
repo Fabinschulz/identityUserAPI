@@ -2,15 +2,12 @@
 using IdentityUser.src.Domain.Entities;
 using IdentityUser.src.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System;
 
 namespace IdentityUser.src.Infra.Persistence
 {
-    public class AppDbContext : DbContext, IApplicationDbContext
+    public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options), IApplicationDbContext
     {
         public DbSet<User> Users => Set<User>();
-
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

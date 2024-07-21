@@ -6,7 +6,7 @@ using MediatR;
 
 namespace IdentityUser.src.Application.Handler
 {
-    public class DeleteUserHandler : IRequestHandler<DeleteUserCommand, DeleteUserByIdQuery>
+    public sealed class DeleteUserHandler : IRequestHandler<DeleteUserCommand, DeleteUserByIdQuery>
     {
         private readonly IUserRepository _userRepository;
 

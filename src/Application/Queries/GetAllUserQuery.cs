@@ -1,20 +1,22 @@
 ﻿using IdentityUser.src.Application.Common.Models;
-using IdentityUser.src.Application.Common.Response;
+using IdentityUser.src.Application.DTOs;
 using IdentityUser.src.Domain.Entities;
-using IdentityUser.src.Domain.Settings;
 
 namespace IdentityUser.src.Application.Queries
 {
-    public class GetAllUserQuery : PagedResponse<User>
+    public class GetAllUserQuery
     {
-        public GetAllUserQuery(
-           List<User> data,
-           int page,
-           int size,
-           int totalItems,
-           string? message = null,
-           int code = Configuration.DefaultStatusCode) : base(data, page, size, totalItems, message, code)
+        public int Page { get; set; }
+        public int TotalPages { get; set; }
+        public int TotalItems { get; set; }
+        public List<UserDto> Data { get; set; }
+
+        public GetAllUserQuery(ListDataPagination<User> entity)
         {
+            Page = entity.Page;
+            TotalPages = entity.TotalPages;
+            TotalItems = entity.TotalItems;
+            Data = entity.Data.Select(user => new UserDto(user)).ToList();
         }
     }
 }

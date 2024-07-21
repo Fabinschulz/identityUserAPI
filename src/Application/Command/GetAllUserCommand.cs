@@ -1,4 +1,5 @@
 ﻿using IdentityUser.src.Application.Queries;
+using IdentityUser.src.Domain.Enums;
 using MediatR;
 
 namespace IdentityUser.src.Application.Requests
@@ -10,6 +11,6 @@ namespace IdentityUser.src.Application.Requests
         string? Email,
         bool IsDeleted,
         string? OrderBy,
-        string? Role) : IRequest<GetAllUserQuery>;
-
+        RoleEnum? Role)
+        : IRequest<GetAllUserQuery>;
 }
