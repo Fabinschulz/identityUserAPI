@@ -1,0 +1,31 @@
+---
+name: Running
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  dev:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Development
+        run: echo 'development'
+  
+  stg:
+    needs: dev
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Staging
+        run: echo 'staging'
+  
+  prd:
+    needs: stg
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Production
+        run: echo 'production'
