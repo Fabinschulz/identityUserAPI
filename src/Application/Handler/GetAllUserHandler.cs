@@ -24,7 +24,7 @@ namespace IdentityUser.src.Application.Handler
 
         public async Task<GetAllUserQuery> Handle(GetAllUserCommand request, CancellationToken cancellationToken)
         {
-            await _validator.ValidateAndThrowAsync(request);
+            await _validator.ValidateAndThrowAsync(request, cancellationToken);
             var validationResult = _validator.Validate(request);
 
             if (!validationResult.IsValid)

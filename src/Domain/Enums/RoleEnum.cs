@@ -13,23 +13,18 @@ namespace IdentityUser.src.Domain.Enums
         User = 1
     }
 
-    public class RoleEnumConverter : JsonConverter<RoleEnum>
+   public class RoleEnumConverter : JsonConverter<RoleEnum>
+{
+    public override RoleEnum Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
-        public override RoleEnum Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-        {
-            string value = reader.GetString();
-            return value switch
-            {
-                "Admin" => RoleEnum.Admin,
-                "User" => RoleEnum.User,
-                _ => throw new ArgumentException("Invalid Role value")
-            };
-        }
-
-        public override void Write(Utf8JsonWriter writer, RoleEnum value, JsonSerializerOptions options)
-        {
-            writer.WriteStringValue(value.ToString());
-        }
+        var value = reader.GetString();
+        return Enum.TryParse<RoleEnum>(value, true, out var role) ? role : throw new JsonException();
     }
+
+    public override void Write(Utf8JsonWriter writer, RoleEnum value, JsonSerializerOptions options)
+    {
+        writer.WriteStringValue(value.ToString());
+    }
+}
 
 }

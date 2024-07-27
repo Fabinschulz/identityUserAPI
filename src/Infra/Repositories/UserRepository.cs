@@ -65,7 +65,7 @@ namespace IdentityUser.src.Infra.Repositories
             return CreateLoggedUser(user, token);
         }
 
-        private void ValidateUserForLogin(User user, string password)
+        private static void ValidateUserForLogin(User user, string password)
         {
 
             if (!PasswordService.VerifyPasswordHash(password, user.Password))
@@ -115,7 +115,7 @@ namespace IdentityUser.src.Infra.Repositories
             ApplyUsernameFilter(ref query, username);
             ApplyEmailFilter(ref query, email);
             ApplyIsDeletedFilter(ref query, isDeleted);
-            ApplyRoleFilter(ref query, role?.ToString());
+            ApplyRoleFilter(ref query, role);
 
             if (!string.IsNullOrEmpty(orderBy))
             {
@@ -124,34 +124,38 @@ namespace IdentityUser.src.Infra.Repositories
 
             var totalItems = await query.CountAsync();
 
-            var totalPages = (int)Math.Ceiling((double)totalItems / size);
-
             var data = await query.Skip((page - 1) * size).Take(size).ToListAsync();
 
             return new ListDataPagination<User>(data, page, size, totalItems);
         }
 
-        private void ApplyUsernameFilter(ref IQueryable<User> query, string? username)
+        private static void ApplyUsernameFilter(ref IQueryable<User> query, string? username)
         {
-            ApplyFilterIfNotEmpty(username, x => EF.Property<string>(x, "Username") != null && EF.Property<string>(x, "Username").Contains(username), ref query);
+            username = username?.ToLower().Trim();
+            ApplyFilterIfNotEmpty(username, x => EF.Property<string>(x, "Username").ToLower().Contains(username!), ref query);
         }
 
-        private void ApplyEmailFilter(ref IQueryable<User> query, string? email)
+
+        private static void ApplyEmailFilter(ref IQueryable<User> query, string? email)
         {
-            ApplyFilterIfNotEmpty(email, x => EF.Property<string>(x, "Email") != null && EF.Property<string>(x, "Email").Contains(email), ref query);
+            ApplyFilterIfNotEmpty(email, x => EF.Property<string>(x, "Email") != null && EF.Property<string>(x, "Email").Contains(email!), ref query);
         }
 
-        private void ApplyIsDeletedFilter(ref IQueryable<User> query, bool isDeleted)
+        private static void ApplyIsDeletedFilter(ref IQueryable<User> query, bool isDeleted)
         {
             ApplyFilterIfTrue(isDeleted, x => EF.Property<bool>(x, "IsDeleted") == isDeleted, x => EF.Property<bool?>(x, "IsDeleted") == false || EF.Property<bool?>(x, "IsDeleted") == null, ref query);
         }
 
-        private void ApplyRoleFilter(ref IQueryable<User> query, string? role)
+        private static void ApplyRoleFilter(ref IQueryable<User> query, RoleEnum? role)
         {
-            ApplyFilterIfNotEmpty(role, x => EF.Property<string>(x, "Role") != null && EF.Property<string>(x, "Role").Contains(role), ref query);
+            if (role.HasValue)
+            {
+                var roleValue = role.Value;
+                query = query.Where(x => x.Role == roleValue);
+            }
         }
 
-        private void ApplyFilterIfNotEmpty(string? value, Expression<Func<User, bool>> filter, ref IQueryable<User> query)
+        private static void ApplyFilterIfNotEmpty(string? value, Expression<Func<User, bool>> filter, ref IQueryable<User> query)
         {
             if (!string.IsNullOrEmpty(value))
             {
@@ -159,18 +163,35 @@ namespace IdentityUser.src.Infra.Repositories
             }
         }
 
-        private void ApplyFilterIfTrue(bool condition, Expression<Func<User, bool>> filterTrue, Expression<Func<User, bool>> filterFalse, ref IQueryable<User> query)
+        private static void ApplyFilterIfTrue(bool condition, Expression<Func<User, bool>> filterTrue, Expression<Func<User, bool>> filterFalse, ref IQueryable<User> query)
         {
             query = query.Where(condition ? filterTrue : filterFalse);
         }
 
-        private IQueryable<User> ApplyOrderBy(IQueryable<User> query, string orderBy)
+        private static IQueryable<User> ApplyOrderBy(IQueryable<User> query, string orderBy)
         {
-            var parameter = Expression.Parameter(typeof(User), "x");
-            var property = Expression.Property(parameter, orderBy.Split('_')[0]);
-            var lambda = Expression.Lambda(property, parameter);
+            switch (orderBy)
+            {
+                case "createdAt_ASC":
+                    return query.OrderBy(x => x.CreatedAt);
+                case "createdAt_DESC":
+                    return query.OrderByDescending(x => x.CreatedAt);
+                case "username_ASC":
+                    return query.OrderBy(x => x.Username);
+                case "username_DESC":
+                    return query.OrderByDescending(x => x.Username);
+                case "email_ASC":
+                    return query.OrderBy(x => x.Email);
+                case "email_DESC":
+                    return query.OrderByDescending(x => x.Email);
+                case "role_ASC":
+                    return query.OrderBy(x => x.Role);
+                case "role_DESC":
+                    return query.OrderByDescending(x => x.Role);
+                default:
+                    return query = query.OrderByDescending(x => x.CreatedAt);
 
-            return orderBy.EndsWith("_desc") ? Queryable.OrderByDescending(query, (dynamic)lambda) : Queryable.OrderBy(query, (dynamic)lambda);
+            }
         }
 
     }
