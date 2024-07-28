@@ -1,4 +1,4 @@
-# CRUD de Usuários - Minimal API
+# CRUD de Usuários - Minimal API 🪪
 
 **Introdução**
 
@@ -27,15 +27,15 @@ A API oferece o serviço de cadastro de usuários, sendo eles: **POST**, **PUT**
 ## Dependências
 
 ```bash
-- **Auto Mapper**
-- **Fluent Validation**
-- **MediatR**
-- **Entity Framework Core**
-- **Entity Framework Core - Design**
-- ***Entity Framework Core - PostgreSQL**
-- **JWT Bearer Authentication**
-- **JWT Tokens**
-- **Dependency Injection**
+- Auto Mapper
+- Fluent Validation
+- MediatR
+- Entity Framework Core
+- Entity Framework Core - Design
+- Entity Framework Core - PostgreSQL
+- JWT Bearer Authentication
+- JWT Tokens
+- Dependency Injection
 ```
 
 >Para configurar o Docker Compose, adicione o seguinte código ao seu arquivo `docker-compose.yaml`:
