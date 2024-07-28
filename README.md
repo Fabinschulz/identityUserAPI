@@ -3,7 +3,7 @@
 **Introdução**
 
 *Esta API RESTful foi desenvolvida utilizando o .NET Minimal API para gerenciar usuários em um banco de dados PostgreSQL. A autenticação é realizada através de tokens JWT para garantir a segurança das operações.*
-- criada com o intuito de aprimorar conhecimentos em Docker e autenticação de usuários.
+`criada com o intuito de aprimorar conhecimentos em Docker e autenticação de usuários.`
 
 **Pré-requisitos**
 
@@ -12,9 +12,9 @@
 
 ## Tecnologias Utilizadas
 
-- **Entity Framework Core**: ORM para interação com o banco de dados.
-- **PostgreSQL**: Sistema de gerenciamento de banco de dados relacional.
-- **Docker**: Ferramenta de containerização para desenvolvimento e implantação.
+*Entity Framework Core*: ORM para interação com o banco de dados.
+*PostgreSQL*: Sistema de gerenciamento de banco de dados relacional.
+*Docker*: Ferramenta de containerização para desenvolvimento e implantação.
 
 ## CQRS (Command Query Responsibility Segregation)
 - Este projeto segue o padrão CQRS, uma abordagem de arquitetura que separa a responsabilidade de manipulação de comandos (alteração de estado) da responsabilidade de consultas (leitura de estado).
@@ -38,7 +38,7 @@ A API oferece o serviço de cadastro de usuários, sendo eles: **POST**, **PUT**
 - **Dependency Injection**
 ```
 
-Para configurar o Docker Compose, adicione o seguinte código ao seu arquivo `docker-compose.yaml`:
+>Para configurar o Docker Compose, adicione o seguinte código ao seu arquivo `docker-compose.yaml`:
 
 ```yaml
 version: '3.8'
