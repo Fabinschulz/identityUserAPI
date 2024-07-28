@@ -1,15 +1,16 @@
 version: '3.8'
 services:
-  sqlite3:
-    image: nouchka/sqlite3:latest
+  postgres:
+    image: postgres:latest
     stdin_open: true
     tty: true
     ports:
       - "5432:5432"
-    container_name: identity_sqlite
+    container_name: identity_postgres
     restart: always
-    # build:
-    #   context: .
-    #   dockerfile: Dockerfile
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: identity-db
     volumes:
-      - ./db/:/root/db/
+      - ./db/:/var/lib/postgresql/data
