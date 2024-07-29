@@ -1,6 +1,7 @@
 ﻿using IdentityUser.src.Application.Requests;
 using IdentityUser.src.Domain.Enums;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 
 namespace IdentityUser.src.Infra.Services.Extensions
 {
@@ -20,12 +21,13 @@ namespace IdentityUser.src.Infra.Services.Extensions
                 return Results.Ok(user);
             }).WithTags("USER").WithSummary("Login a user");
 
-            app.MapPut("/v1/user/{id}", async (IMediator mediator, Guid id, UpdateUserCommand command) =>
+            app.MapPut("/v1/user/{id}", async (IMediator mediator, Guid id, [FromBody] UpdateUserCommand command) =>
             {
                 var updatedCommand = new UpdateUserCommand(id, command.Username, command.Email, command.Role, command.IsDeleted);
                 var user = await mediator.Send(updatedCommand);
                 return Results.Ok(user);
             }).WithTags("USER").WithSummary("Update a user");
+
 
             app.MapGet("/v1/user/{id}", async (IMediator mediator, Guid id) =>
             {
@@ -39,7 +41,7 @@ namespace IdentityUser.src.Infra.Services.Extensions
                 var command = new DeleteUserCommand(id);
                 var user = await mediator.Send(command);
                 return Results.Ok(user);
-            }).WithTags("USER").WithSummary("Delete a user");
+            }).WithTags("USER").WithSummary("Delete a user").RequireAuthorization("Admin");
 
             app.MapGet("/v1/user", async (IMediator mediator, int page, int size, string? username, string? email, bool? isDeleted, string? orderBy, RoleEnum? role) =>
             {

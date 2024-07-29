@@ -27,6 +27,7 @@ app.UseRewriter(options);
 
 app.UseSwagger();
 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "User Api v1"));
+app.MapSwagger();
 app.UseErrorHandler();
 app.UseHttpsRedirection();
 app.UseCors();
