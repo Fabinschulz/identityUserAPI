@@ -3,9 +3,9 @@ using IdentityUser.src.Application.Requests;
 
 namespace IdentityUser.src.Application.Validator
 {
-    public sealed class GetUserByIdValidation : AbstractValidator<GetUserByIdCommand>
+    public sealed class GetUserByIdValidator : AbstractValidator<GetUserByIdCommand>
     {
-        public GetUserByIdValidation()
+        public GetUserByIdValidator()
         {
             RuleFor(x => x.Id)
                 .NotEmpty().WithMessage("Id is required")

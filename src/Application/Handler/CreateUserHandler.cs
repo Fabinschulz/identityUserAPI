@@ -26,11 +26,11 @@ namespace IdentityUser.src.Application.Handler
 
             await ValidateRequest(request, cancellationToken);
 
-            var createUser = CreateUserFromRequest(request);
-            var createdUser = await CreateUserInRepository(createUser);
-            var userResponse = MapUserToResponse(createdUser);
+            var mappedUser = mapUser(request);
+            var registered = await Register(mappedUser);
+            var response = MapUserToResponse(registered);
 
-            return userResponse;
+            return response;
         }
 
         private async Task ValidateRequest(CreateUserCommand request, CancellationToken cancellationToken)
@@ -38,13 +38,13 @@ namespace IdentityUser.src.Application.Handler
             await _validator.ValidateAndThrowAsync(request, cancellationToken);
         }
 
-        private User CreateUserFromRequest(CreateUserCommand request)
+        private User mapUser(CreateUserCommand request)
         {
             return _mapper.Map<User>(request);
 
         }
 
-        private async Task<User> CreateUserInRepository(User user)
+        private async Task<User> Register(User user)
         {
             return await _userRepository.Register(user);
         }
