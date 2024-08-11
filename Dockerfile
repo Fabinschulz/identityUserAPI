@@ -9,6 +9,7 @@ WORKDIR /app
 EXPOSE 8080
 EXPOSE 8081
 
+# Estágio de construção do aplicativo
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
@@ -23,12 +24,16 @@ COPY . .
 WORKDIR "/src/."
 RUN dotnet build "./IdentityUser.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
+# Estágio de publicação do aplicativo
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
 RUN dotnet publish "./IdentityUser.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
+# Estágio final do aplicativo - Imagem de produção
 FROM base AS final
 WORKDIR /app
+
+# COPY --from: Significa que você deseja copiar arquivos de outro estágio de construção exemplo: "publish"
 COPY --from=publish /app/publish .
 
 # ENTRYPOINT: Define o comando que será executado quando o contêiner for iniciado
