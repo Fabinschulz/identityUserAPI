@@ -67,7 +67,6 @@ namespace IdentityUser.src.Infra.Repositories
 
         private static void ValidateUserForLogin(User user, string password)
         {
-
             if (!PasswordService.VerifyPasswordHash(password, user.Password))
                 throw new BadRequestException(new[] { "Senha inválida." });
         }
@@ -84,7 +83,6 @@ namespace IdentityUser.src.Infra.Repositories
             return loggedUser;
         }
 
-
         private async Task<User> GetUserByEmail(string email)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
@@ -98,6 +96,14 @@ namespace IdentityUser.src.Infra.Repositories
 
         public async Task<User> Register(User user)
         {
+            var existingUser = await _context.Users
+                .FirstOrDefaultAsync(u => u.Email == user.Email);
+
+            if (existingUser != null)
+            {
+                throw new BadRequestException(new[] { "Usuário já existe com este email." });
+            }
+
             await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
             return user;
@@ -134,7 +140,6 @@ namespace IdentityUser.src.Infra.Repositories
             username = username?.ToLower().Trim();
             ApplyFilterIfNotEmpty(username, x => EF.Property<string>(x, "Username").ToLower().Contains(username!), ref query);
         }
-
 
         private static void ApplyEmailFilter(ref IQueryable<User> query, string? email)
         {
@@ -189,10 +194,8 @@ namespace IdentityUser.src.Infra.Repositories
                 case "role_DESC":
                     return query.OrderByDescending(x => x.Role);
                 default:
-                    return query = query.OrderByDescending(x => x.CreatedAt);
-
+                    return query.OrderByDescending(x => x.CreatedAt);
             }
         }
-
     }
 }
