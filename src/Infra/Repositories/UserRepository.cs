@@ -96,8 +96,7 @@ namespace IdentityUser.src.Infra.Repositories
 
         public async Task<User> Register(User user)
         {
-            var existingUser = await _context.Users
-                .FirstOrDefaultAsync(u => u.Email == user.Email);
+            var existingUser = await GetUserByEmail(user.Email);
 
             if (existingUser != null)
             {
