@@ -1,9 +1,6 @@
-version: '3.8'
 services:
   postgres:
-    image: postgres:latest
-    stdin_open: true
-    tty: true
+    image: postgres:15.8-alpine
     ports:
       - "5432:5432"
     container_name: identity_postgres

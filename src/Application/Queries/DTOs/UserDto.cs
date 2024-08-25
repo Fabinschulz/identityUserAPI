@@ -3,7 +3,7 @@ using IdentityUser.src.Domain.Entities;
 using IdentityUser.src.Domain.Enums;
 using System.Text.Json.Serialization;
 
-namespace IdentityUser.src.Application.DTOs
+namespace IdentityUser.src.Application.Queries.DTOs
 {
     public class UserDto : BaseEntity
     {
