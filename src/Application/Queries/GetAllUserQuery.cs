@@ -1,5 +1,5 @@
 ﻿using IdentityUser.src.Application.Common.Models;
-using IdentityUser.src.Application.DTOs;
+using IdentityUser.src.Application.Queries.DTOs;
 using IdentityUser.src.Domain.Entities;
 
 namespace IdentityUser.src.Application.Queries

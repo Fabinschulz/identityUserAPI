@@ -1,5 +1,5 @@
 ﻿
-using IdentityUser.src.Domain.Settings;
+using IdentityUser.src.Infra.Settings;
 
 namespace IdentityUser.src.Application.Common.Models
 {
