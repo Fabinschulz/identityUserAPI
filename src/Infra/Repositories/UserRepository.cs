@@ -83,15 +83,9 @@ namespace IdentityUser.src.Infra.Repositories
             return loggedUser;
         }
 
-        private async Task<User> GetUserByEmail(string email)
+        private async Task<User?> GetUserByEmail(string email)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
-            if (user == null)
-            {
-                throw new KeyNotFoundException("Usuário não encontrado.");
-            }
-
-            return user;
+            return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
         }
 
         public async Task<User> Register(User user)
