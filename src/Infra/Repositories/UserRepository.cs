@@ -58,6 +58,12 @@ namespace IdentityUser.src.Infra.Repositories
         public async Task<User> Login(string email, string password)
         {
             var user = await GetUserByEmail(email);
+
+            if (user == null)
+            {
+                throw new BadRequestException(new[] { "Email não cadastrado." });
+            }
+
             var hashedPassword = PasswordService.HashPassword(password);
             ValidateUserForLogin(user, hashedPassword);
 
@@ -65,10 +71,11 @@ namespace IdentityUser.src.Infra.Repositories
             return CreateLoggedUser(user, token);
         }
 
+
         private static void ValidateUserForLogin(User user, string password)
         {
             if (!PasswordService.VerifyPasswordHash(password, user.Password))
-                throw new BadRequestException(new[] { "Senha inválida." });
+                throw new BadRequestException(new[] { "Senha incorreta. Verifique suas credenciais e tente novamente." });
         }
 
         private User CreateLoggedUser(User user, string token)
