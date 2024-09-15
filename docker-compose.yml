@@ -1,7 +1,7 @@
 services:
   postgres:
     image: postgres:15.8-alpine
-    container_name: identity_postgres
+    container_name: postgres_container
     ports:
       - "5432:5432"
     restart: always
@@ -9,17 +9,29 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: identity-db
+    networks:
+      - identity-network
     volumes:
       - ./db/:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
-  app:
-    container_name: identity_container
+  api:
+    container_name: api_container
     ports:
       - "8080:8080"
     build:
       context: .
-      dockerfile: Dockerfile
-    networks:
-      - default
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
+    restart: always
+    networks:
+      - identity-network
+
+networks:
+  identity-network:
+    driver: bridge
