@@ -50,7 +50,7 @@ namespace IdentityUser.src.Infra.Services.Extensions
                 return Results.Ok(user);
             }).WithTags("USER").WithSummary("Delete a user").RequireAuthorization("Admin");
 
-            app.MapGet("/v1/user", async (IMediator mediator, int page, int size, string? username, string? email, bool? isDeleted, string? orderBy, RoleEnum? role) =>
+            app.MapGet("/v1/user", async (IMediator mediator, string? username, string? email, bool? isDeleted, string? orderBy, RoleEnum? role, int page = 0, int size = 20) =>
             {
                 var getAllUserRequest = new GetAllUserCommand(page, size, username, email, isDeleted ?? false, orderBy, role);
                 var users = await mediator.Send(getAllUserRequest);
