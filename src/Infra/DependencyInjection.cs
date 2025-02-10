@@ -4,6 +4,7 @@ using IdentityUser.src.Domain.Enums;
 using IdentityUser.src.Domain.Interfaces;
 using IdentityUser.src.Infra.Persistence;
 using IdentityUser.src.Infra.Repositories;
+using IdentityUser.src.Infra.Settings;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -15,23 +16,48 @@ using System.Text;
 
 namespace IdentityUser.src.Infra
 {
+    /// <summary>
+    /// Provides extension methods for adding services to the dependency injection container.
+    /// </summary>
     public static class DependencyInjection
     {
 
+        /// <summary>
+        /// Adds the user context to the service collection.
+        /// </summary>
+        /// <param name="builder">The web application builder.</param>
+        /// <returns>The web application builder.</returns>
         public static void AddUserContext(this WebApplicationBuilder builder)
         {
             builder.Services.AddTransient<UserRepository>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
         }
 
+        /// <summary>
+        /// Adds the database context to the service collection.
+        /// </summary>
+        /// <param name="builder">The web application builder.</param>
         public static void AddDatabase(this WebApplicationBuilder builder)
         {
-            builder.Services.AddDbContext<AppDbContext>(options =>
+            string connectionString = builder.Configuration.GetConnectionString("PostgreSQLConnection")!;
+            Console.WriteLine("Initializing Database for API: " + connectionString.Substring(0, 49));
+
+            try
             {
-                options.UseNpgsql(builder.Configuration.GetConnectionString("PostgreSQLConnection"));
-            });
+                builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error connecting to database: " + e.Message);
+                throw new Exception("Error on postgresql: " + connectionString.Substring(0, 49));
+            }
+
         }
 
+        /// <summary>
+        /// Adds JWT authentication to the service collection.
+        /// </summary>
+        /// <param name="builder">The web application builder.</param>
         public static void AddAuthJwt(this WebApplicationBuilder builder)
         {
             builder.Services.AddAuthentication(x =>
@@ -53,6 +79,10 @@ namespace IdentityUser.src.Infra
             });
         }
 
+        /// <summary>
+        /// Adds Swagger documentation to the service collection.
+        /// </summary>
+        /// <param name="builder">The web application builder.</param>
         public static void AddSwaggerDoc(this WebApplicationBuilder builder)
         {
 
@@ -77,8 +107,16 @@ namespace IdentityUser.src.Infra
             });
         }
 
+        /// <summary>
+        /// Adds Swagger documentation to the service collection.
+        /// </summary>
         public class TagDescriptionsDocumentFilter : IDocumentFilter
         {
+            /// <summary>
+            /// Applies the filter to the OpenApiDocument.
+            /// </summary>
+            /// <param name="swaggerDoc"></param>
+            /// <param name="context"></param>
             public void Apply(OpenApiDocument swaggerDoc, DocumentFilterContext context)
             {
                 swaggerDoc.Tags = new List<OpenApiTag>
@@ -88,6 +126,10 @@ namespace IdentityUser.src.Infra
             }
         }
 
+        /// <summary>
+        /// Adds authorization policies to the service collection.
+        /// </summary>
+        /// <param name="builder">The web application builder.</param>
         public static void AddAuthPolicy(this WebApplicationBuilder builder)
         {
             builder.Services.AddAuthorization(opt =>
@@ -97,12 +139,10 @@ namespace IdentityUser.src.Infra
             });
         }
 
-        public static class IdentityData
-        {
-            public const string UserPolicy = "User";
-            public const string AdminPolicy = "Admin";
-        }
-
+        /// <summary>
+        /// Configures the services for the application.
+        /// </summary>
+        /// <param name="services">The service collection to configure.</param>
         public static void ConfigureServices(this IServiceCollection services)
         {
             services.AddAutoMapper(typeof(Program));
@@ -116,25 +156,7 @@ namespace IdentityUser.src.Infra
                 options.JsonSerializerOptions.Converters.Add(new RoleEnumConverter());
             });
 
-            // Add database migration during application startup
-            using (var scope = services.BuildServiceProvider().CreateScope())
-            {
-                var serviceProvider = scope.ServiceProvider;
-                try
-                {
-                    var context = serviceProvider.GetRequiredService<AppDbContext>();
-                    var logger = serviceProvider.GetRequiredService<ILogger<AppDbContext>>();
-
-                    context.Database.Migrate();
-                    logger.LogInformation("Migração do banco de dados concluída com sucesso.");
-                }
-                catch (Exception ex)
-                {
-                    var logger = serviceProvider.GetRequiredService<ILogger<AppDbContext>>();
-                    logger.LogError(ex, "Erro durante a migração do banco de dados.");
-                    throw new Exception("Erro durante a migração do banco de dados.", ex);
-                }
-            }
+            services.AddHostedService<MigrationHostedService>();
 
         }
     }

@@ -12,25 +12,50 @@ using IdentityUser.src.Domain.Enums;
 
 namespace IdentityUser.src.Infra.Repositories
 {
+    /// <summary>
+    /// Repository class for managing user data.
+    /// </summary>
     public class UserRepository : BaseRepository<User>, IUserRepository
     {
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UserRepository"/> class.
+        /// </summary>
+        /// <param name="context">The database context.</param>
         public UserRepository(AppDbContext context) : base(context)
         {
         }
 
-        public async Task<User> ChangePassword(string email, string password, string newPassword)
+        /// <summary>
+        /// Changes the password for the user with the specified email and current password.
+        /// </summary>
+        /// <param name="userId">The id of the user.</param>
+        /// <param name="currentPassword">The current password of the user.</param>
+        /// <param name="newPassword">The new password to set for the user.</param>
+        /// <returns>The user with the updated password.</returns>
+        public async Task<User> ChangePassword(Guid userId, string currentPassword, string newPassword)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(x => x.Email == email && x.Password == password);
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == userId);
             if (user == null)
             {
                 throw new KeyNotFoundException("Usuário não encontrado.");
             }
+
+            if (currentPassword != user.Password)
+            {
+                string errorMessage = "A senha informada não confere com a senha cadastrada.";
+                throw new BadRequestException(errorMessage);
+            }
+
             user.Password = newPassword;
-            await _context.SaveChangesAsync();
             return user;
         }
 
+        /// <summary>
+        /// Resets the password for the user with the specified email.
+        /// </summary>
+        /// <param name="email">The email of the user.</param>
+        /// <returns>The user with the reset password.</returns>
         public async Task<User> ForgotPassword(string email)
         {
             var user = await _context.Users.FirstOrDefaultAsync(x => x.Email == email);
@@ -43,6 +68,11 @@ namespace IdentityUser.src.Infra.Repositories
             return user;
         }
 
+        /// <summary>
+        /// Gets the authenticated user based on the provided claims principal.
+        /// </summary>
+        /// <param name="user">The claims principal containing the user's claims.</param>
+        /// <returns>The authenticated user.</returns>
         public async Task<User> GetAuthenticatedUser(ClaimsPrincipal user)
         {
             var email = user.FindFirst(ClaimTypes.Email)?.Value;
@@ -55,6 +85,12 @@ namespace IdentityUser.src.Infra.Repositories
             return userEntity;
         }
 
+        /// <summary>
+        /// Logs in a user with the specified email and password.
+        /// </summary>
+        /// <param name="email">The email of the user.</param>
+        /// <param name="password">The password of the user.</param>
+        /// <returns>The logged-in user with a generated token.</returns>
         public async Task<User> Login(string email, string password)
         {
             var user = await GetUserByEmail(email);
@@ -70,7 +106,6 @@ namespace IdentityUser.src.Infra.Repositories
             var token = TokenService.GenerateToken(user);
             return CreateLoggedUser(user, token);
         }
-
 
         private static void ValidateUserForLogin(User user, string password)
         {
@@ -95,6 +130,10 @@ namespace IdentityUser.src.Infra.Repositories
             return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
         }
 
+        /// <summary>
+        /// Registers a new user.
+        /// </summary>
+        /// <param name="user">The user to register.</param>_
         public async Task<User> Register(User user)
         {
             var existingUser = await GetUserByEmail(user.Email);
@@ -114,6 +153,17 @@ namespace IdentityUser.src.Infra.Repositories
             return _context.Set<User>().AsQueryable();
         }
 
+        /// <summary>
+        /// Gets a paginated list of users based on the specified filters and sorting options.
+        /// </summary>
+        /// <param name="page">The page number to retrieve.</param>
+        /// <param name="size">The number of items per page.</param>
+        /// <param name="username">The username to filter by.</param>
+        /// <param name="email">The email to filter by.</param>
+        /// <param name="isDeleted">The flag to filter by deleted status.</param>
+        /// <param name="orderBy">The field to order by.</param>
+        /// <param name="role">The role to filter by.</param>
+        /// <returns>The paginated list of users.</returns>
         public async Task<ListDataPagination<User>> GetAll(int page, int size, string? username, string? email, bool isDeleted, string? orderBy, RoleEnum? role)
         {
             var query = BuildBaseQuery();
@@ -129,8 +179,7 @@ namespace IdentityUser.src.Infra.Repositories
             }
 
             var totalItems = await query.CountAsync();
-
-            var data = await query.Skip((page - 1) * size).Take(size).ToListAsync();
+            var data = await query.Skip(page * size).Take(size).ToListAsync();
 
             return new ListDataPagination<User>(data, page, size, totalItems);
         }

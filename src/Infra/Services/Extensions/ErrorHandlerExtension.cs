@@ -5,8 +5,15 @@ using System.Text.Json;
 
 namespace IdentityUser.src.Infra.Services.Extensions
 {
+    /// <summary>
+    /// Provides extension methods for handling errors in the application.
+    /// </summary>
     public static class ErrorHandlerExtension
     {
+        /// <summary>
+        /// Configures the application to use a custom error handler.
+        /// </summary>
+        /// <param name="app">The application builder.</param>
         public static void UseErrorHandler(this IApplicationBuilder app)
         {
             app.UseExceptionHandler(builder =>
@@ -22,7 +29,7 @@ namespace IdentityUser.src.Infra.Services.Extensions
             if (exception == null)
                 return;
 
-            context.Response?.Headers.Add("Access-Control-Allow-Origin", "*");
+            context.Response?.Headers.Append("Access-Control-Allow-Origin", "*");
             context.Response!.ContentType = "application/json";
 
             if (exception is BadRequestException badRequestException)
@@ -33,11 +40,29 @@ namespace IdentityUser.src.Infra.Services.Extensions
             {
                 await HandleNotFound(context, notFoundException);
             }
+            else if (exception is InvalidOperationException invalidOperationException)
+            {
+                await HandleDbContextConcurrencyError(context, invalidOperationException);
+            }
             else
             {
                 await HandleInternalError(context, exception);
             }
         }
+
+        private static async Task HandleDbContextConcurrencyError(HttpContext context, InvalidOperationException exception)
+        {
+            context.Response.StatusCode = (int)HttpStatusCode.Conflict;
+
+            var errorResponse = new
+            {
+                Message = "Ocorreu um problema de concorrência ao acessar o banco de dados. Tente novamente.",
+                context.Response.StatusCode
+            };
+
+            await WriteJsonResponse(context, errorResponse);
+        }
+
 
         private static async Task HandleBadRequest(HttpContext context, BadRequestException badRequestException)
         {
@@ -65,15 +90,30 @@ namespace IdentityUser.src.Infra.Services.Extensions
             await WriteJsonResponse(context, errorResponse);
         }
 
-        private static async Task HandleInternalError(HttpContext context, System.Exception exception)
+        private static async Task HandleInternalError(HttpContext context, Exception exception)
         {
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
-            var errorResponse = new
+            object errorResponse;
+
+            if (exception is JsonException jsonException)
             {
-                Message = exception.Message,
-                StatusCode = context.Response.StatusCode
-            };
+                errorResponse = new
+                {
+                    Message = "Ocorreu um erro ao processar os dados fornecidos.Verifique os valores enviados.",
+                    Details = jsonException.Message,
+                    StatusCode = context.Response.StatusCode
+                };
+            }
+            else
+            {
+                errorResponse = new
+                {
+                    Message = "Ocorreu um erro inesperado no servidor.Tente novamente mais tarde.",
+                    Details = exception.Message,
+                    StatusCode = context.Response.StatusCode
+                };
+            }
 
             await WriteJsonResponse(context, errorResponse);
         }

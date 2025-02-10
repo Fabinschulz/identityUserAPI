@@ -1,12 +1,19 @@
-﻿using IdentityUser.src.Application.Requests;
+﻿using IdentityUser.src.Application.Command;
 using IdentityUser.src.Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IdentityUser.src.Infra.Services.Extensions
 {
+    /// <summary>
+    /// Provides extension methods for user-related operations.
+    /// </summary>
     public static class UserExtension
     {
+        /// <summary>
+        /// Maps the user endpoints to the web application.
+        /// </summary>
+        /// <param name="app">The web application.</param>
         public static void MapUserEndpoints(this WebApplication app)
         {
             app.MapPost("/v1/user/register", async (IMediator mediator, CreateUserCommand command) =>

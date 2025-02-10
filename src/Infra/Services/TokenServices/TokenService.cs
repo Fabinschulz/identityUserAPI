@@ -7,8 +7,17 @@ using System.Text;
 
 namespace IdentityUser.src.Infra.Services.TokenServices
 {
+    /// <summary>
+    /// Provides methods for generating tokens.
+    /// </summary>
     public static class TokenService
     {
+
+        /// <summary>
+        /// Generates a JWT token for the specified user.
+        /// </summary>
+        /// <param name="user">The user for whom the token is generated.</param>
+        /// <returns>A JWT token as a string.</returns>
         public static string GenerateToken(User user)
         {
             //Estancia do manipulador de Token
