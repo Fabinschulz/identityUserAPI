@@ -1,3 +1,4 @@
+using ESM0028.src.Infra.Services;
 using IdentityUser.src.Infra;
 using IdentityUser.src.Infra.Services.Extensions;
 using Microsoft.AspNetCore.Rewrite;
@@ -28,12 +29,12 @@ app.UseRewriter(options);
 app.UseSwagger();
 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "User Api v1"));
 app.MapSwagger();
-app.UseErrorHandler();
+// app.UseErrorHandler();
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseHttpsRedirection();
 app.UseCors();
 app.MapControllers();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapUserEndpoints();
-
 app.Run();

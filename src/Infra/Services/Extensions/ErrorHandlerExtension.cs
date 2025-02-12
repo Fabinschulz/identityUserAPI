@@ -5,6 +5,7 @@ using System.Text.Json;
 
 namespace IdentityUser.src.Infra.Services.Extensions
 {
+
     /// <summary>
     /// Provides extension methods for handling errors in the application.
     /// </summary>
@@ -14,6 +15,8 @@ namespace IdentityUser.src.Infra.Services.Extensions
         /// Configures the application to use a custom error handler.
         /// </summary>
         /// <param name="app">The application builder.</param>
+
+        [Obsolete("Use UseMiddleware<ExceptionHandlingMiddleware> instead.")]
         public static void UseErrorHandler(this IApplicationBuilder app)
         {
             app.UseExceptionHandler(builder =>
