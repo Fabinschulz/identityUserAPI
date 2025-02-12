@@ -1,35 +1,22 @@
-﻿namespace IdentityUser.src.Application.Queries
+﻿using IdentityUser.src.Application.Queries.DTOs;
+using IdentityUser.src.Domain.Entities;
+
+namespace IdentityUser.src.Application.Queries
 {
 
     /// <summary>
     /// Represents a query to get a user by their unique identifier.
     /// </summary>
-    public sealed record GetUserByIdQuery
+    public sealed class GetUserByIdQuery : UserDto
     {
         /// <summary>
-        /// Gets or sets the unique identifier of the user.
+        /// Initializes a new instance of the <see cref="GetUserByIdQuery"/> class.
         /// </summary>
-        public Guid Id { get; set; }
+        /// <param name="user">The user entity to map from.</param>
+        public GetUserByIdQuery(User user) : base(user)
+        {
+        }
 
-        /// <summary>
-        /// Gets or sets the username of the user.
-        /// </summary>
-        public string? Username { get; set; }
-
-        /// <summary>
-        /// Gets or sets the email address of the user.
-        /// </summary>
-        public required string Email { get; set; }
-
-        /// <summary>
-        /// Gets or sets the role of the user.
-        /// </summary>
-        public required string Role { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether the user is deleted.
-        /// </summary>
-        public bool IsDeleted { get; set; }
     }
 
 }

@@ -1,14 +1,14 @@
-﻿using IdentityUser.src.Domain.Entities;
+﻿using IdentityUser.src.Application.Common.Exceptions;
+using IdentityUser.src.Application.Common.Models;
+using IdentityUser.src.Domain.Entities;
+using IdentityUser.src.Domain.Enums;
 using IdentityUser.src.Domain.Interfaces;
 using IdentityUser.src.Infra.Persistence;
-using System.Linq.Expressions;
-using System.Security.Claims;
-using Microsoft.EntityFrameworkCore;
 using IdentityUser.src.Infra.Services.PasswordService;
 using IdentityUser.src.Infra.Services.TokenServices;
-using IdentityUser.src.Application.Common.Models;
-using IdentityUser.src.Application.Common.Exceptions;
-using IdentityUser.src.Domain.Enums;
+using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
+using System.Security.Claims;
 
 namespace IdentityUser.src.Infra.Repositories
 {

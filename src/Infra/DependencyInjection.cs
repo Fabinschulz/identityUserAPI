@@ -4,6 +4,7 @@ using IdentityUser.src.Domain.Enums;
 using IdentityUser.src.Domain.Interfaces;
 using IdentityUser.src.Infra.Persistence;
 using IdentityUser.src.Infra.Repositories;
+using IdentityUser.src.Infra.Services.Extensions;
 using IdentityUser.src.Infra.Settings;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -149,6 +150,9 @@ namespace IdentityUser.src.Infra
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+            services.AddEndpointsApiExplorer();
+            services.AddSwaggerGen();
+            services.ConfigureCorsPolicy();
 
             services.AddControllers()
             .AddJsonOptions(options =>

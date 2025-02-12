@@ -3,6 +3,7 @@ using FluentValidation;
 using IdentityUser.src.Application.Command;
 using IdentityUser.src.Application.Common.Exceptions;
 using IdentityUser.src.Application.Queries;
+using IdentityUser.src.Application.Queries.DTOs;
 using IdentityUser.src.Domain.Entities;
 using IdentityUser.src.Domain.Interfaces;
 using MediatR;
@@ -66,13 +67,13 @@ namespace IdentityUser.src.Application.Handler
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="GetUserByIdMapper"/> class.
-        /// Configures the mappings between <see cref="UpdateUserCommand"/> and <see cref="User"/>,
-        /// and between <see cref="User"/> and <see cref="GetUserByIdQuery"/>.
+        /// Configures the mappings between <see cref="UpdateUserCommand"/> and <see cref="UserDto"/>,
+        /// and between <see cref="UserDto"/> and <see cref="GetUserByIdQuery"/>.
         /// </summary>        
         public GetUserByIdMapper()
         {
-            CreateMap<UpdateUserCommand, User>();
-            CreateMap<User, GetUserByIdQuery>();
+            CreateMap<UpdateUserCommand, UserDto>();
+            CreateMap<UserDto, GetUserByIdQuery>();
         }
     }
 }

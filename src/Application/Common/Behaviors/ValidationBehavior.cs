@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
-using MediatR;
 using FluentValidation.Results;
 using IdentityUser.src.Application.Common.Exceptions;
+using MediatR;
 
 namespace IdentityUser.src.Application.Common.Behaviors
 {

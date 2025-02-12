@@ -1,19 +1,12 @@
-using ESM0028.src.Infra.Services;
+using IdentityUser.src.Application.Common.Middleware;
 using IdentityUser.src.Infra;
 using IdentityUser.src.Infra.Services.Extensions;
 using Microsoft.AspNetCore.Rewrite;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
-
 var builderServices = builder.Services;
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builderServices.AddEndpointsApiExplorer();
-builderServices.AddSwaggerGen();
-builderServices.ConfigureCorsPolicy();
-builderServices.AddControllers();
 builder.AddUserContext();
 builder.AddDatabase();
 builder.AddSwaggerDoc();
@@ -29,7 +22,6 @@ app.UseRewriter(options);
 app.UseSwagger();
 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "User Api v1"));
 app.MapSwagger();
-// app.UseErrorHandler();
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseHttpsRedirection();
 app.UseCors();

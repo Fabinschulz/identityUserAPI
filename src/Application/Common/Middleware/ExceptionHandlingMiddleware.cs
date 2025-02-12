@@ -1,9 +1,8 @@
-
+using IdentityUser.src.Application.Common.Exceptions;
 using System.Net;
 using System.Text.Json;
-using IdentityUser.src.Application.Common.Exceptions;
 
-namespace ESM0028.src.Infra.Services
+namespace IdentityUser.src.Application.Common.Middleware
 {
     /// <summary>
     /// Middleware for handling exceptions that occur during the request processing pipeline.

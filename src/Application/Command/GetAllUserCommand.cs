@@ -1,8 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
-using FluentValidation;
+﻿using FluentValidation;
 using IdentityUser.src.Application.Queries;
 using IdentityUser.src.Domain.Enums;
 using MediatR;
+using System.ComponentModel.DataAnnotations;
 
 namespace IdentityUser.src.Application.Command
 {

@@ -1,10 +1,10 @@
-﻿using IdentityUser.src.Application.Queries;
-using MediatR;
+﻿using AutoMapper;
 using FluentValidation;
-using AutoMapper;
-using IdentityUser.src.Domain.Interfaces;
-using IdentityUser.src.Domain.Entities;
 using IdentityUser.src.Application.Command;
+using IdentityUser.src.Application.Queries;
+using IdentityUser.src.Domain.Entities;
+using IdentityUser.src.Domain.Interfaces;
+using MediatR;
 
 namespace IdentityUser.src.Application.Handler
 {

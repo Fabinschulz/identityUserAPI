@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
-using System.Text.Json.Serialization;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace IdentityUser.src.Domain.Enums
 {
