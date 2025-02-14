@@ -11,14 +11,17 @@ namespace IdentityUser.src.Application.Handler
     public sealed class DeleteUserHandler : IRequestHandler<DeleteUserCommand, DeleteUserByIdQuery>
     {
         private readonly IUserRepository _userRepository;
+        private readonly ILogger<DeleteUserHandler> _logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DeleteUserHandler"/> class.
         /// </summary>
         /// <param name="userRepository">The user repository.</param>
-        public DeleteUserHandler(IUserRepository userRepository)
+        /// <param name="logger">The logger.</param>
+        public DeleteUserHandler(IUserRepository userRepository, ILogger<DeleteUserHandler> logger)
         {
             _userRepository = userRepository;
+            _logger = logger;
         }
 
         /// <summary>
@@ -32,6 +35,7 @@ namespace IdentityUser.src.Application.Handler
             var isDeleted = await DeleteUserInRepository(request.Id);
 
             var message = isDeleted ? "Usuário deletado com sucesso." : "Falha ao deletar o usuário.";
+            _logger.LogInformation("----- Command result: {@Result} - {CommandName}: {CommandId} ({@Command})", message, nameof(DeleteUserCommand.Id), request.Id, request);
             return new DeleteUserByIdQuery(isDeleted, message);
         }
 

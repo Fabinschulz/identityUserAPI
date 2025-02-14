@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
-using IdentityUser.src.Application.Queries;
+using IdentityUser.src.Application.Common.Models;
+using IdentityUser.src.Domain.Entities;
 using IdentityUser.src.Domain.Enums;
 using MediatR;
 using System.ComponentModel.DataAnnotations;
@@ -24,7 +25,7 @@ namespace IdentityUser.src.Application.Command
         bool IsDeleted,
         string? OrderBy,
         RoleEnum? Role)
-        : IRequest<GetAllUserQuery>;
+        : IRequest<ListDataPagination<User>>;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="GetAllUserValidator"/> class.

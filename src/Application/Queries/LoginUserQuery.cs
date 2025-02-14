@@ -10,7 +10,7 @@
         /// Gets the unique identifier for the login user query.
         /// </summary>
         public Guid? Id { get; init; }
-        
+
         /// <summary>
         /// Gets the username of the user.
         /// </summary>

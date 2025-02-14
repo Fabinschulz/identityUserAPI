@@ -16,6 +16,7 @@ namespace IdentityUser.src.Application.Handler
         private readonly IMapper _mapper;
         private readonly IUserRepository _userRepository;
         private readonly IValidator<CreateUserCommand> _validator;
+        private readonly ILogger<CreateUserHandler> _logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CreateUserHandler"/> class.
@@ -23,11 +24,13 @@ namespace IdentityUser.src.Application.Handler
         /// <param name="mapper">The mapper to map between objects.</param>
         /// <param name="userRepository">The user repository to interact with the data store.</param>
         /// <param name="validator">The validator to validate the create user command.</param>
-        public CreateUserHandler(IMapper mapper, IUserRepository userRepository, IValidator<CreateUserCommand> validator)
+        /// <param name="logger">The logger.</param>
+        public CreateUserHandler(IMapper mapper, IUserRepository userRepository, IValidator<CreateUserCommand> validator, ILogger<CreateUserHandler> logger)
         {
             _mapper = mapper;
             _userRepository = userRepository;
             _validator = validator;
+            _logger = logger;
         }
 
         /// <summary>
@@ -44,6 +47,7 @@ namespace IdentityUser.src.Application.Handler
             var registered = await Register(mappedUser);
             var response = MapUserToResponse(registered);
 
+            _logger.LogInformation("---- Created User - {@User}", response);
             return response;
         }
 

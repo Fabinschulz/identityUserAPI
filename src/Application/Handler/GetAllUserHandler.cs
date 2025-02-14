@@ -1,8 +1,6 @@
-﻿using AutoMapper;
-using FluentValidation;
+﻿using FluentValidation;
 using IdentityUser.src.Application.Command;
 using IdentityUser.src.Application.Common.Models;
-using IdentityUser.src.Application.Queries;
 using IdentityUser.src.Domain.Entities;
 using IdentityUser.src.Domain.Interfaces;
 using MediatR;
@@ -12,23 +10,23 @@ namespace IdentityUser.src.Application.Handler
     /// <summary>
     /// Handles the request to get all users.
     /// </summary>
-    public sealed class GetAllUserHandler : IRequestHandler<GetAllUserCommand, GetAllUserQuery>
+    public sealed class GetAllUserHandler : IRequestHandler<GetAllUserCommand, ListDataPagination<User>>
     {
         private readonly IUserRepository _userRepository;
-        private readonly IMapper _mapper;
         private readonly IValidator<GetAllUserCommand> _validator;
+        private readonly ILogger<GetAllUserHandler> _logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GetAllUserHandler"/> class.
         /// </summary>
         /// <param name="userRepository">The user repository.</param>
-        /// <param name="mapper">The mapper.</param>
         /// <param name="validator">The validator for the command.</param>
-        public GetAllUserHandler(IUserRepository userRepository, IMapper mapper, IValidator<GetAllUserCommand> validator)
+        /// <param name="logger">The logger.</param>
+        public GetAllUserHandler(IUserRepository userRepository, IValidator<GetAllUserCommand> validator, ILogger<GetAllUserHandler> logger)
         {
             _userRepository = userRepository;
-            _mapper = mapper;
             _validator = validator;
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         /// <summary>
@@ -38,13 +36,14 @@ namespace IdentityUser.src.Application.Handler
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>A task that represents the asynchronous operation. The task result contains the query result with the list of users.</returns>
         /// <exception cref="ValidationException">Thrown when the request command validation fails.</exception>
-        public async Task<GetAllUserQuery> Handle(GetAllUserCommand request, CancellationToken cancellationToken)
+        public async Task<ListDataPagination<User>> Handle(GetAllUserCommand request, CancellationToken cancellationToken)
         {
             await _validator.ValidateAndThrowAsync(request, cancellationToken);
             var validationResult = _validator.Validate(request);
 
             if (!validationResult.IsValid)
             {
+                _logger.LogError("Validation failed for {Request}", request);
                 throw new ValidationException(validationResult.Errors);
             }
 
@@ -58,25 +57,8 @@ namespace IdentityUser.src.Application.Handler
                 request.Role
                 );
 
-            var usersMapped = _mapper.Map<ListDataPagination<User>>(users);
-            return _mapper.Map<GetAllUserQuery>(usersMapped);
-        }
-    }
-
-    /// <summary>
-    /// Provides mapping configurations for user-related commands and queries.
-    /// </summary>
-    public sealed class GetAllUserMapper : Profile
-    {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="GetAllUserMapper"/> class.
-        /// Configures the mappings between <see cref="GetAllUserCommand"/> and <see cref="User"/>,
-        /// and between <see cref="User"/> and <see cref="GetAllUserQuery"/>.
-        /// </summary>
-        public GetAllUserMapper()
-        {
-            CreateMap<GetAllUserCommand, User>();
-            CreateMap<User, GetAllUserQuery>();
+            _logger.LogInformation("Handling {Request}", request);
+            return users;
         }
     }
 }

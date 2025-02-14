@@ -51,6 +51,8 @@ namespace IdentityUser.src.Application.Handler
             await _userRepository.Update(user);
 
             var userResponse = MapToUserResponse(user);
+
+            _logger.LogInformation("----- Command result: {@Result} - User updated: {Id} ({@Command})", userResponse, request.Id, request);
             return userResponse;
         }
 
@@ -74,7 +76,7 @@ namespace IdentityUser.src.Application.Handler
             if (user == null)
             {
                 string errorMessage = $"Usuário com id: {userId} não foi encontrado no banco de dados.";
-                _logger.LogError(errorMessage);
+                _logger.LogError("----- User not found: {Id}", userId);
                 throw new NotFoundException(errorMessage);
             }
         }

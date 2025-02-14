@@ -4,7 +4,6 @@ using IdentityUser.src.Application.Command;
 using IdentityUser.src.Application.Common.Exceptions;
 using IdentityUser.src.Application.Queries;
 using IdentityUser.src.Application.Queries.DTOs;
-using IdentityUser.src.Domain.Entities;
 using IdentityUser.src.Domain.Interfaces;
 using MediatR;
 
@@ -18,6 +17,7 @@ namespace IdentityUser.src.Application.Handler
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
         private readonly IValidator<GetUserByIdCommand> _validator;
+        private readonly ILogger<GetUserByIdHandler> _logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GetUserByIdHandler"/> class.
@@ -25,11 +25,13 @@ namespace IdentityUser.src.Application.Handler
         /// <param name="userRepository">The user repository.</param>
         /// <param name="mapper">The mapper.</param>
         /// <param name="validator">The validator for <see cref="GetUserByIdCommand"/>.</param>
-        public GetUserByIdHandler(IUserRepository userRepository, IMapper mapper, IValidator<GetUserByIdCommand> validator)
+        /// <param name="logger">The logger.</param>
+        public GetUserByIdHandler(IUserRepository userRepository, IMapper mapper, IValidator<GetUserByIdCommand> validator, ILogger<GetUserByIdHandler> logger)
         {
             _userRepository = userRepository;
             _mapper = mapper;
             _validator = validator;
+            _logger = logger;
         }
 
         /// <summary>
@@ -47,15 +49,18 @@ namespace IdentityUser.src.Application.Handler
 
             if (!validationResult.IsValid)
             {
+                _logger.LogError("Validation failed for {Request}", request);
                 throw new ValidationException(validationResult.Errors);
             }
 
             var user = await _userRepository.GetById(request.Id);
             if (user == null)
             {
+                _logger.LogError("User not found for ID {Id}", request.Id);
                 throw new NotFoundException("User not found");
             }
 
+            _logger.LogInformation("----- Getting user by ID: {Id}", request.Id);
             return _mapper.Map<GetUserByIdQuery>(user);
         }
     }
