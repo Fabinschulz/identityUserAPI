@@ -175,7 +175,7 @@ namespace IdentityUser.src.Infra
             services.AddStackExchangeRedisCache(options =>
             {
                 options.Configuration = redisConnectionString;
-                options.InstanceName = "ESM0028_";
+                options.InstanceName = "IDENTITY_";
             });
         }
     }
