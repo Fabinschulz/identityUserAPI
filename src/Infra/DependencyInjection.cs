@@ -163,5 +163,20 @@ namespace IdentityUser.src.Infra
             services.AddHostedService<MigrationHostedService>();
 
         }
+
+        /// <summary>
+        /// Configures Redis caching for the application.
+        /// </summary>
+        /// <param name="services">The service collection to add the Redis cache to.</param>
+        /// <param name="configuration">The application configuration containing the Redis connection string.</param>
+        public static void Redis(this IServiceCollection services, IConfiguration configuration)
+        {
+            var redisConnectionString = configuration["Redis"];
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = redisConnectionString;
+                options.InstanceName = "ESM0028_";
+            });
+        }
     }
 }

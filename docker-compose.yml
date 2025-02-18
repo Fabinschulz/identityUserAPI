@@ -1,4 +1,14 @@
 services:
+  redis:
+    container_name: redis
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - identity-network
+
   postgres:
     image: postgres:15.8-alpine
     container_name: postgres_container
@@ -12,7 +22,7 @@ services:
     networks:
       - identity-network
     volumes:
-      - ./db/:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U postgres" ]
       interval: 5s
@@ -25,13 +35,19 @@ services:
       - "8080:8080"
     build:
       context: .
+      dockerfile: Dockerfile
     depends_on:
       postgres:
         condition: service_healthy
     restart: always
     networks:
       - identity-network
-
+      
 networks:
   identity-network:
     driver: bridge
+
+volumes:
+  redis_data:
+  postgres_data:
+  

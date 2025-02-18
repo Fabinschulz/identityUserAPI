@@ -13,6 +13,7 @@ builder.AddSwaggerDoc();
 builder.AddAuthPolicy();
 builder.AddAuthJwt();
 builderServices.ConfigureServices();
+builderServices.Redis(builder.Configuration);
 
 var app = builder.Build();
 

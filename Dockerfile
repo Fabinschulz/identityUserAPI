@@ -5,9 +5,8 @@ USER app
 # WORKDIR: É o diretório de trabalho para trabalhar dentro do contêiner
 WORKDIR /app
 
-# EXPOSE: Informa ao Docker que o contêiner escuta as portas em tempo de execução - 8080 e 8081
+# EXPOSE: Informa ao Docker que o contêiner escuta as portas em tempo de execução - 8080
 EXPOSE 8080
-EXPOSE 8081
 
 # Estágio de construção do aplicativo
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
