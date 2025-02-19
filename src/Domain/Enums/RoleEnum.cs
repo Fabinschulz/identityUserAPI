@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -70,9 +71,12 @@ namespace IdentityUser.src.Domain.Enums
         /// <param name="writer">The writer.</param>
         /// <param name="value">The RoleEnum value to convert.</param>
         /// <param name="options">The serializer options.</param>
+
         public override void Write(Utf8JsonWriter writer, RoleEnum value, JsonSerializerOptions options)
         {
-            writer.WriteStringValue(value.ToString());
+            var field = typeof(RoleEnum).GetField(value.ToString());
+            var description = field?.GetCustomAttribute<DescriptionAttribute>()?.Description ?? value.ToString();
+            writer.WriteStringValue(description);
         }
 
     }

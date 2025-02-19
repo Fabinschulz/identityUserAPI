@@ -1,4 +1,5 @@
 ﻿using IdentityUser.src.Application.Command;
+using IdentityUser.src.Application.Queries;
 using IdentityUser.src.Domain.Common;
 using IdentityUser.src.Domain.Entities;
 using IdentityUser.src.Domain.Enums;
@@ -6,7 +7,7 @@ using IdentityUser.src.Infra.Cache.DistributedCache;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
-namespace IdentityUser.src.Presentation
+namespace IdentityUser.src.Presentation.Api
 {
     /// <summary>
     /// Provides extension methods for user-related operations.
@@ -19,7 +20,7 @@ namespace IdentityUser.src.Presentation
         /// <param name="app">The web application.</param>
         public static void MapUserEndpoints(this WebApplication app)
         {
-            app.MapPost("/v1/user/register", async (IMediator mediator, IDistributedCacheService cache, CreateUserCommand command) =>
+            app.MapPost("/v1/user/register", async (IMediator mediator, IDistributedCacheService cache, [FromBody] CreateUserCommand command) =>
             {
                 var user = await mediator.Send(command);
 
@@ -29,7 +30,7 @@ namespace IdentityUser.src.Presentation
 
             }).WithTags("USER").WithSummary("Create a new user");
 
-            app.MapPost("/v1/user/login", async (IMediator mediator, LoginUserCommand command) =>
+            app.MapPost("/v1/user/login", async (IMediator mediator, [FromBody] LoginUserCommand command) =>
             {
                 var user = await mediator.Send(command);
                 return Results.Ok(user);
@@ -49,7 +50,7 @@ namespace IdentityUser.src.Presentation
             app.MapGet("/v1/user/{id}", async (IMediator mediator, IDistributedCacheService cache, Guid id) =>
             {
                 var cacheKey = $"User_GetById_{id}";
-                var cachedData = await cache.GetValueAsync<GetUserByIdCommand>(cacheKey);
+                var cachedData = await cache.GetValueAsync<GetUserByIdQuery>(cacheKey);
 
                 if (cachedData != null)
                 {

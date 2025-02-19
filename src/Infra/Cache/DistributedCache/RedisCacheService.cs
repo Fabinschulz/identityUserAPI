@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Caching.Distributed;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace IdentityUser.src.Infra.Cache.DistributedCache
 {
@@ -34,6 +35,7 @@ namespace IdentityUser.src.Infra.Cache.DistributedCache
         /// A task that represents the asynchronous operation. The task result contains the value from the cache if found; otherwise, the default value for the type <typeparamref name="T"/>.
         /// </returns>
         /// <exception cref="Exception">Thrown when an error occurs while retrieving the value from the cache.</exception>
+
         public async Task<T?> GetValueAsync<T>(string cacheKey)
         {
             try
@@ -44,7 +46,15 @@ namespace IdentityUser.src.Infra.Cache.DistributedCache
                 if (!string.IsNullOrEmpty(cachedData))
                 {
                     _logger.LogInformation("Dados encontrados no cache para a chave: {CacheKey}", cacheKey);
-                    return JsonSerializer.Deserialize<T>(cachedData!);
+
+                    // Configurar a serialização para lidar com enums
+                    var options = new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true,
+                        Converters = { new JsonStringEnumConverter() }
+                    };
+
+                    return JsonSerializer.Deserialize<T>(cachedData!, options);
                 }
 
                 _logger.LogInformation("Dados não encontrados no cache para a chave: {CacheKey}", cacheKey);
@@ -66,12 +76,20 @@ namespace IdentityUser.src.Infra.Cache.DistributedCache
         /// <param name="options">The cache entry options.</param>
         /// <returns>A task that represents the asynchronous operation.</returns>
         /// <exception cref="Exception">Thrown when an error occurs while setting the value in the cache.</exception>
+
         public async Task SetValueAsync<T>(string cacheKey, T data, DistributedCacheEntryOptions options)
         {
             try
             {
                 _logger.LogInformation("Armazenando dados no cache para a chave: {CacheKey}", cacheKey);
-                var jsonData = JsonSerializer.Serialize(data);
+
+                var jsonOptions = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true,
+                    Converters = { new JsonStringEnumConverter() }
+                };
+
+                var jsonData = JsonSerializer.Serialize(data, jsonOptions);
                 await _cache.SetStringAsync(cacheKey, jsonData, options);
             }
             catch (Exception ex)

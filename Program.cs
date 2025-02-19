@@ -1,6 +1,6 @@
 using IdentityUser.src.Infra;
-using IdentityUser.src.Infra.Middleware;
-using IdentityUser.src.Presentation;
+using IdentityUser.src.Presentation.Api;
+using IdentityUser.src.Presentation.Middleware;
 using Microsoft.AspNetCore.Rewrite;
 
 var builder = WebApplication.CreateBuilder(args);

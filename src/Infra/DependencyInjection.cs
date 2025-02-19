@@ -2,6 +2,7 @@
 using IdentityUser.src.Application.Common.Behaviors;
 using IdentityUser.src.Domain.Enums;
 using IdentityUser.src.Domain.Interfaces.Repositories;
+using IdentityUser.src.Infra.Cache.DistributedCache;
 using IdentityUser.src.Infra.Persistence.Database;
 using IdentityUser.src.Infra.Persistence.Repositories;
 using IdentityUser.src.Infra.Settings;
@@ -31,6 +32,7 @@ namespace IdentityUser.src.Infra
         {
             builder.Services.AddTransient<UserRepository>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IDistributedCacheService, RedisCacheService>();
         }
 
         /// <summary>
