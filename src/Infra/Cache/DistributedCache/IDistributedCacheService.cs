@@ -1,11 +1,11 @@
 using Microsoft.Extensions.Caching.Distributed;
 
-namespace IdentityUser.src.Domain.Interfaces
+namespace IdentityUser.src.Infra.Cache.DistributedCache
 {
     /// <summary>
     /// Interface for cache repository operations.
     /// </summary>
-    public interface ICacheRepository
+    public interface IDistributedCacheService
     {
         /// <summary>
         /// Retrieves a value from the cache asynchronously.

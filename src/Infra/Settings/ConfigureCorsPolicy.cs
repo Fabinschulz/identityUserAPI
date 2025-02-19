@@ -1,4 +1,4 @@
-﻿namespace IdentityUser.src.Infra.Services.Extensions
+﻿namespace IdentityUser.src.Infra.Settings
 {
     // Permitir requisições de qualquer origem
     /// <summary>

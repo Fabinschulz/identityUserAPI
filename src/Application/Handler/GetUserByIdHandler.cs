@@ -4,7 +4,7 @@ using IdentityUser.src.Application.Command;
 using IdentityUser.src.Application.Common.Exceptions;
 using IdentityUser.src.Application.Queries;
 using IdentityUser.src.Application.Queries.DTOs;
-using IdentityUser.src.Domain.Interfaces;
+using IdentityUser.src.Domain.Interfaces.Repositories;
 using MediatR;
 
 namespace IdentityUser.src.Application.Handler

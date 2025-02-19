@@ -1,9 +1,9 @@
-﻿using IdentityUser.src.Application.Common.Models;
+﻿using IdentityUser.src.Domain.Common;
 using IdentityUser.src.Domain.Entities;
 using IdentityUser.src.Domain.Enums;
 using System.Security.Claims;
 
-namespace IdentityUser.src.Domain.Interfaces
+namespace IdentityUser.src.Domain.Interfaces.Repositories
 {
     /// <summary>
     /// Interface for user repository operations.

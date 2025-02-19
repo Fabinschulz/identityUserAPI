@@ -1,17 +1,17 @@
 ﻿using IdentityUser.src.Application.Command;
-using IdentityUser.src.Application.Common.Models;
+using IdentityUser.src.Domain.Common;
 using IdentityUser.src.Domain.Entities;
 using IdentityUser.src.Domain.Enums;
-using IdentityUser.src.Domain.Interfaces;
+using IdentityUser.src.Infra.Cache.DistributedCache;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
-namespace IdentityUser.src.Infra.Services.Extensions
+namespace IdentityUser.src.Presentation
 {
     /// <summary>
     /// Provides extension methods for user-related operations.
     /// </summary>
-    public static class UserExtension
+    public static class UserEndpoints
     {
         /// <summary>
         /// Maps the user endpoints to the web application.
@@ -19,7 +19,7 @@ namespace IdentityUser.src.Infra.Services.Extensions
         /// <param name="app">The web application.</param>
         public static void MapUserEndpoints(this WebApplication app)
         {
-            app.MapPost("/v1/user/register", async (IMediator mediator, ICacheRepository cache, CreateUserCommand command) =>
+            app.MapPost("/v1/user/register", async (IMediator mediator, IDistributedCacheService cache, CreateUserCommand command) =>
             {
                 var user = await mediator.Send(command);
 
@@ -36,7 +36,7 @@ namespace IdentityUser.src.Infra.Services.Extensions
             }).WithTags("USER").WithSummary("Login a user");
 
 
-            app.MapPut("/v1/user/{id}", async (IMediator mediator, ICacheRepository cache, Guid id, [FromBody] UpdateUserCommand command) =>
+            app.MapPut("/v1/user/{id}", async (IMediator mediator, IDistributedCacheService cache, Guid id, [FromBody] UpdateUserCommand command) =>
             {
                 var updatedCommand = new UpdateUserCommand(id, command.Username, command.Email, command.Role, command.IsDeleted);
                 var user = await mediator.Send(updatedCommand);
@@ -46,7 +46,7 @@ namespace IdentityUser.src.Infra.Services.Extensions
                 return Results.Ok(user);
             }).WithTags("USER").WithSummary("Update a user");
 
-            app.MapGet("/v1/user/{id}", async (IMediator mediator, ICacheRepository cache, Guid id) =>
+            app.MapGet("/v1/user/{id}", async (IMediator mediator, IDistributedCacheService cache, Guid id) =>
             {
                 var cacheKey = $"User_GetById_{id}";
                 var cachedData = await cache.GetValueAsync<GetUserByIdCommand>(cacheKey);
@@ -64,7 +64,7 @@ namespace IdentityUser.src.Infra.Services.Extensions
 
             }).WithTags("USER").WithSummary("Find a user by id");
 
-            app.MapDelete("/v1/user/{id}", async (IMediator mediator, ICacheRepository cache, Guid id) =>
+            app.MapDelete("/v1/user/{id}", async (IMediator mediator, IDistributedCacheService cache, Guid id) =>
             {
                 var command = new DeleteUserCommand(id);
                 var user = await mediator.Send(command);
@@ -75,7 +75,7 @@ namespace IdentityUser.src.Infra.Services.Extensions
 
             }).WithTags("USER").WithSummary("Delete a user").RequireAuthorization("Admin");
 
-            app.MapGet("/v1/user", async (IMediator mediator, ICacheRepository cache, string? username, string? email, bool? isDeleted, string? orderBy, RoleEnum? role, int page = 0, int size = 20) =>
+            app.MapGet("/v1/user", async (IMediator mediator, IDistributedCacheService cache, string? username, string? email, bool? isDeleted, string? orderBy, RoleEnum? role, int page = 0, int size = 20) =>
             {
                 var cacheKey = $"Users_GetAll";
                 var cachedUsers = await cache.GetValueAsync<ListDataPagination<User>>(cacheKey);

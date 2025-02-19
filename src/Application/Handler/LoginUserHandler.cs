@@ -3,7 +3,7 @@ using FluentValidation;
 using IdentityUser.src.Application.Command;
 using IdentityUser.src.Application.Queries;
 using IdentityUser.src.Domain.Entities;
-using IdentityUser.src.Domain.Interfaces;
+using IdentityUser.src.Domain.Interfaces.Repositories;
 using MediatR;
 
 namespace IdentityUser.src.Application.Handler

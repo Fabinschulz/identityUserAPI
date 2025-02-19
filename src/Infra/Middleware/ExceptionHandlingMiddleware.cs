@@ -2,7 +2,7 @@ using IdentityUser.src.Application.Common.Exceptions;
 using System.Net;
 using System.Text.Json;
 
-namespace IdentityUser.src.Application.Common.Middleware
+namespace IdentityUser.src.Infra.Middleware
 {
     /// <summary>
     /// Middleware for handling exceptions that occur during the request processing pipeline.

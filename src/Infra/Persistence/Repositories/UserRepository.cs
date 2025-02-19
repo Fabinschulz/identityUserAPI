@@ -1,16 +1,16 @@
 ﻿using IdentityUser.src.Application.Common.Exceptions;
-using IdentityUser.src.Application.Common.Models;
+using IdentityUser.src.Domain.Common;
 using IdentityUser.src.Domain.Entities;
 using IdentityUser.src.Domain.Enums;
-using IdentityUser.src.Domain.Interfaces;
-using IdentityUser.src.Infra.Persistence;
+using IdentityUser.src.Domain.Interfaces.Repositories;
+using IdentityUser.src.Infra.Persistence.Database;
 using IdentityUser.src.Infra.Services.PasswordService;
 using IdentityUser.src.Infra.Services.TokenServices;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using System.Security.Claims;
 
-namespace IdentityUser.src.Infra.Repositories
+namespace IdentityUser.src.Infra.Persistence.Repositories
 {
     /// <summary>
     /// Repository class for managing user data.

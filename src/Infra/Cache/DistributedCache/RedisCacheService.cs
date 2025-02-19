@@ -1,26 +1,25 @@
-using IdentityUser.src.Domain.Interfaces;
 using Microsoft.Extensions.Caching.Distributed;
 using System.Text.Json;
 
-namespace IdentityUser.src.Infra.Repositories
+namespace IdentityUser.src.Infra.Cache.DistributedCache
 {
     /// <summary>
     /// Provides methods for interacting with a distributed cache.
     /// </summary>
-    public class CacheRepository : ICacheRepository
+    public class RedisCacheService : IDistributedCacheService
     {
         private readonly IDistributedCache _cache;
-        private readonly ILogger<CacheRepository> _logger;
+        private readonly ILogger<RedisCacheService> _logger;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CacheRepository"/> class.
+        /// Initializes a new instance of the <see cref="RedisCacheService"/> class.
         /// </summary>
         /// <param name="cache">The distributed cache instance to be used for caching operations.</param>
         /// <param name="logger">The logger instance to be used for logging operations.</param>
         /// <returns>
-        /// A new instance of the <see cref="CacheRepository"/> class.
+        /// A new instance of the <see cref="RedisCacheService"/> class.
         /// </returns>
-        public CacheRepository(IDistributedCache cache, ILogger<CacheRepository> logger)
+        public RedisCacheService(IDistributedCache cache, ILogger<RedisCacheService> logger)
         {
             _cache = cache;
             _logger = logger;

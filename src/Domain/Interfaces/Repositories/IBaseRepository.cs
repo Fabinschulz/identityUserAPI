@@ -1,6 +1,6 @@
 ﻿using IdentityUser.src.Domain.Common;
 
-namespace IdentityUser.src.Domain.Interfaces
+namespace IdentityUser.src.Domain.Interfaces.Repositories
 {
     /// <summary>
     /// Interface for base repository operations.

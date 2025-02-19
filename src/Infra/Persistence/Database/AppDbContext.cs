@@ -3,7 +3,7 @@ using IdentityUser.src.Domain.Entities;
 using IdentityUser.src.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace IdentityUser.src.Infra.Persistence
+namespace IdentityUser.src.Infra.Persistence.Database
 {
     /// <summary>
     /// Represents the application's database context.

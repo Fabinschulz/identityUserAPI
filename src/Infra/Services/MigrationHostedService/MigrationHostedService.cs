@@ -1,4 +1,4 @@
-using IdentityUser.src.Infra.Persistence;
+using IdentityUser.src.Infra.Persistence.Database;
 using Microsoft.EntityFrameworkCore;
 
 /// <summary>

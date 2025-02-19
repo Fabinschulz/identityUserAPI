@@ -1,7 +1,6 @@
-﻿
-using IdentityUser.src.Infra.Settings;
+﻿using IdentityUser.src.Infra.Settings;
 
-namespace IdentityUser.src.Application.Common.Models
+namespace IdentityUser.src.Domain.Common
 {
     /// <summary>
     /// Represents a paginated list of data.

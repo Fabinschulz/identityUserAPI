@@ -1,10 +1,9 @@
 ﻿using FluentValidation;
 using IdentityUser.src.Application.Common.Behaviors;
 using IdentityUser.src.Domain.Enums;
-using IdentityUser.src.Domain.Interfaces;
-using IdentityUser.src.Infra.Persistence;
-using IdentityUser.src.Infra.Repositories;
-using IdentityUser.src.Infra.Services.Extensions;
+using IdentityUser.src.Domain.Interfaces.Repositories;
+using IdentityUser.src.Infra.Persistence.Database;
+using IdentityUser.src.Infra.Persistence.Repositories;
 using IdentityUser.src.Infra.Settings;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;

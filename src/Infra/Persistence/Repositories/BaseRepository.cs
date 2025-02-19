@@ -1,9 +1,9 @@
 ﻿using IdentityUser.src.Domain.Common;
-using IdentityUser.src.Domain.Interfaces;
-using IdentityUser.src.Infra.Persistence;
+using IdentityUser.src.Domain.Interfaces.Repositories;
+using IdentityUser.src.Infra.Persistence.Database;
 using Microsoft.EntityFrameworkCore;
 
-namespace IdentityUser.src.Infra.Repositories
+namespace IdentityUser.src.Infra.Persistence.Repositories
 {
     /// <summary>
     /// Base repository class providing common data access methods for entities.

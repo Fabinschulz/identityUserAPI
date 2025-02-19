@@ -6,7 +6,7 @@ namespace IdentityUser.src.Infra.Services.Extensions
     /// <summary>
     /// Provides extension methods for role claims.
     /// </summary>
-    public static class RoleClaimExtention
+    public static class UserClaimsExtensions
     {
         /// <summary>
         /// Gets the claims for the specified user.

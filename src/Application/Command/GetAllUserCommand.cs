@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using IdentityUser.src.Application.Common.Models;
+using IdentityUser.src.Domain.Common;
 using IdentityUser.src.Domain.Entities;
 using IdentityUser.src.Domain.Enums;
 using MediatR;

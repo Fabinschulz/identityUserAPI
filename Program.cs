@@ -1,6 +1,6 @@
-using IdentityUser.src.Application.Common.Middleware;
 using IdentityUser.src.Infra;
-using IdentityUser.src.Infra.Services.Extensions;
+using IdentityUser.src.Infra.Middleware;
+using IdentityUser.src.Presentation;
 using Microsoft.AspNetCore.Rewrite;
 
 var builder = WebApplication.CreateBuilder(args);
