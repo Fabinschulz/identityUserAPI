@@ -1,6 +1,6 @@
 ﻿using IdentityUser.src.Application.Command;
 using IdentityUser.src.Application.Queries;
-using IdentityUser.src.Domain.Interfaces.Repositories;
+using IdentityUser.src.Domain.Services;
 using MediatR;
 
 namespace IdentityUser.src.Application.Handler
@@ -10,17 +10,17 @@ namespace IdentityUser.src.Application.Handler
     /// </summary>
     public sealed class DeleteUserHandler : IRequestHandler<DeleteUserCommand, DeleteUserByIdQuery>
     {
-        private readonly IUserRepository _userRepository;
+        private readonly UserServices _userService;
         private readonly ILogger<DeleteUserHandler> _logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DeleteUserHandler"/> class.
         /// </summary>
-        /// <param name="userRepository">The user repository.</param>
+        /// <param name="userServices">The user services.</param>
         /// <param name="logger">The logger.</param>
-        public DeleteUserHandler(IUserRepository userRepository, ILogger<DeleteUserHandler> logger)
+        public DeleteUserHandler(UserServices userServices, ILogger<DeleteUserHandler> logger)
         {
-            _userRepository = userRepository;
+            _userService = userServices;
             _logger = logger;
         }
 
@@ -32,21 +32,17 @@ namespace IdentityUser.src.Application.Handler
         /// <returns>A task that represents the asynchronous operation. The task result contains the delete user by ID query.</returns>
         public async Task<DeleteUserByIdQuery> Handle(DeleteUserCommand request, CancellationToken cancellationToken)
         {
-            var isDeleted = await DeleteUserInRepository(request.Id);
-
-            var message = isDeleted ? "Usuário deletado com sucesso." : "Falha ao deletar o usuário.";
-            _logger.LogInformation("----- Command result: {@Result} - {CommandName}: {CommandId} ({@Command})", message, nameof(DeleteUserCommand.Id), request.Id, request);
-            return new DeleteUserByIdQuery(isDeleted, message);
-        }
-
-        /// <summary>
-        /// Deletes the user in the repository.
-        /// </summary>
-        /// <param name="id">The user ID.</param>
-        /// <returns>A task that represents the asynchronous operation. The task result contains a boolean indicating whether the user was deleted.</returns>
-        private async Task<bool> DeleteUserInRepository(Guid id)
-        {
-            return await _userRepository.Delete(id);
+            try
+            {
+                var isDeleted = await _userService.DeleteUserAsync(request.Id);
+                var message = isDeleted ? "Usuário deletado com sucesso." : "Falha ao deletar o usuário.";
+                return new DeleteUserByIdQuery(isDeleted, message);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError("Error in Command {CommandName} - {Error}", request.GetType().Name, e.Message);
+                throw new Exception("Error: " + e.Message);
+            }
         }
     }
 }

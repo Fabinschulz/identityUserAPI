@@ -3,7 +3,7 @@ using FluentValidation;
 using IdentityUser.src.Application.Command;
 using IdentityUser.src.Application.Queries;
 using IdentityUser.src.Domain.Entities;
-using IdentityUser.src.Domain.Interfaces.Repositories;
+using IdentityUser.src.Domain.Services;
 using MediatR;
 
 namespace IdentityUser.src.Application.Handler
@@ -14,7 +14,7 @@ namespace IdentityUser.src.Application.Handler
     public sealed class CreateUserHandler : IRequestHandler<CreateUserCommand, CreateUserQuery>
     {
         private readonly IMapper _mapper;
-        private readonly IUserRepository _userRepository;
+        private readonly UserServices _userService;
         private readonly IValidator<CreateUserCommand> _validator;
         private readonly ILogger<CreateUserHandler> _logger;
 
@@ -22,13 +22,13 @@ namespace IdentityUser.src.Application.Handler
         /// Initializes a new instance of the <see cref="CreateUserHandler"/> class.
         /// </summary>
         /// <param name="mapper">The mapper to map between objects.</param>
-        /// <param name="userRepository">The user repository to interact with the data store.</param>
+        /// <param name="userServices">The user services to interact with the data store.</param>
         /// <param name="validator">The validator to validate the create user command.</param>
         /// <param name="logger">The logger.</param>
-        public CreateUserHandler(IMapper mapper, IUserRepository userRepository, IValidator<CreateUserCommand> validator, ILogger<CreateUserHandler> logger)
+        public CreateUserHandler(IMapper mapper, UserServices userServices, IValidator<CreateUserCommand> validator, ILogger<CreateUserHandler> logger)
         {
             _mapper = mapper;
-            _userRepository = userRepository;
+            _userService = userServices;
             _validator = validator;
             _logger = logger;
         }
@@ -41,55 +41,19 @@ namespace IdentityUser.src.Application.Handler
         /// <returns>A task that represents the asynchronous operation. The task result contains the create user query.</returns>
         public async Task<CreateUserQuery> Handle(CreateUserCommand request, CancellationToken cancellationToken)
         {
-            await ValidateRequest(request, cancellationToken);
-
-            var mappedUser = mapUser(request);
-            var registered = await Register(mappedUser);
-            var response = MapUserToResponse(registered);
-
-            _logger.LogInformation("---- Created User - {@User}", response);
-            return response;
-        }
-
-        /// <summary>
-        /// Validates the create user command.
-        /// </summary>
-        /// <param name="request">The create user command.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>A task that represents the asynchronous operation.</returns>
-        private async Task ValidateRequest(CreateUserCommand request, CancellationToken cancellationToken)
-        {
             await _validator.ValidateAndThrowAsync(request, cancellationToken);
-        }
 
-        /// <summary>
-        /// Maps the create user command to a user entity.
-        /// </summary>
-        /// <param name="request">The create user command.</param>
-        /// <returns>The mapped user entity.</returns>
-        private User mapUser(CreateUserCommand request)
-        {
-            return _mapper.Map<User>(request);
-        }
-
-        /// <summary>
-        /// Registers the user in the data store.
-        /// </summary>
-        /// <param name="user">The user entity.</param>
-        /// <returns>A task that represents the asynchronous operation. The task result contains the registered user entity.</returns>
-        private async Task<User> Register(User user)
-        {
-            return await _userRepository.Register(user);
-        }
-
-        /// <summary>
-        /// Maps the user entity to a create user query.
-        /// </summary>
-        /// <param name="user">The user entity.</param>
-        /// <returns>The mapped create user query.</returns>
-        private CreateUserQuery MapUserToResponse(User user)
-        {
-            return _mapper.Map<CreateUserQuery>(user);
+            try
+            {
+                var mappedUser = _mapper.Map<User>(request);
+                var registered = await _userService.CreateUserAsync(mappedUser);
+                return _mapper.Map<CreateUserQuery>(registered);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError("Error in Command {CommandName} - {Error}", request.GetType().Name, e.Message);
+                throw new Exception("Error: " + e.Message);
+            }
         }
     }
 

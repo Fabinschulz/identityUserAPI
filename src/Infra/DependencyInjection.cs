@@ -2,6 +2,7 @@
 using IdentityUser.src.Application.Common.Behaviors;
 using IdentityUser.src.Domain.Enums;
 using IdentityUser.src.Domain.Interfaces.Repositories;
+using IdentityUser.src.Domain.Services;
 using IdentityUser.src.Infra.Cache.DistributedCache;
 using IdentityUser.src.Infra.Persistence.Database;
 using IdentityUser.src.Infra.Persistence.Repositories;
@@ -24,13 +25,13 @@ namespace IdentityUser.src.Infra
     {
 
         /// <summary>
-        /// Adds the user context to the service collection.
+        /// Adds the repositories to the service collection.
         /// </summary>
         /// <param name="builder">The web application builder.</param>
         /// <returns>The web application builder.</returns>
-        public static void AddUserContext(this WebApplicationBuilder builder)
+        public static void AddRepositories(this WebApplicationBuilder builder)
         {
-            builder.Services.AddTransient<UserRepository>();
+            builder.Services.AddScoped<UserServices>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IDistributedCacheService, RedisCacheService>();
         }

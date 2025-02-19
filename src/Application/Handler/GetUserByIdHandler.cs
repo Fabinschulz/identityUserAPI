@@ -4,7 +4,7 @@ using IdentityUser.src.Application.Command;
 using IdentityUser.src.Application.Common.Exceptions;
 using IdentityUser.src.Application.Queries;
 using IdentityUser.src.Domain.Entities;
-using IdentityUser.src.Domain.Interfaces.Repositories;
+using IdentityUser.src.Domain.Services;
 using MediatR;
 
 namespace IdentityUser.src.Application.Handler
@@ -14,7 +14,7 @@ namespace IdentityUser.src.Application.Handler
     /// </summary>
     public sealed class GetUserByIdHandler : IRequestHandler<GetUserByIdCommand, GetUserByIdQuery>
     {
-        private readonly IUserRepository _userRepository;
+        private readonly UserServices _userService;
         private readonly IMapper _mapper;
         private readonly IValidator<GetUserByIdCommand> _validator;
         private readonly ILogger<GetUserByIdHandler> _logger;
@@ -22,13 +22,13 @@ namespace IdentityUser.src.Application.Handler
         /// <summary>
         /// Initializes a new instance of the <see cref="GetUserByIdHandler"/> class.
         /// </summary>
-        /// <param name="userRepository">The user repository.</param>
+        /// <param name="userServices">The user service.</param>
         /// <param name="mapper">The mapper.</param>
         /// <param name="validator">The validator for <see cref="GetUserByIdCommand"/>.</param>
         /// <param name="logger">The logger.</param>
-        public GetUserByIdHandler(IUserRepository userRepository, IMapper mapper, IValidator<GetUserByIdCommand> validator, ILogger<GetUserByIdHandler> logger)
+        public GetUserByIdHandler(UserServices userServices, IMapper mapper, IValidator<GetUserByIdCommand> validator, ILogger<GetUserByIdHandler> logger)
         {
-            _userRepository = userRepository;
+            _userService = userServices;
             _mapper = mapper;
             _validator = validator;
             _logger = logger;
@@ -53,15 +53,16 @@ namespace IdentityUser.src.Application.Handler
                 throw new ValidationException(validationResult.Errors);
             }
 
-            var user = await _userRepository.GetById(request.Id);
-            if (user == null)
+            try
             {
-                _logger.LogError("User not found for ID {Id}", request.Id);
-                throw new NotFoundException("User not found");
+                var user = await _userService.GetUserByIdAsync(request.Id);
+                return _mapper.Map<GetUserByIdQuery>(user);
             }
-
-            _logger.LogInformation("----- Getting user by ID: {Id}", request.Id);
-            return _mapper.Map<GetUserByIdQuery>(user);
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error handling {Request}", request);
+                throw new Exception("Error: " + ex.Message);
+            }
         }
     }
 

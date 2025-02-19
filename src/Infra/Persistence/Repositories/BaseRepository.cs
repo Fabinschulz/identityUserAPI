@@ -29,7 +29,7 @@ namespace IdentityUser.src.Infra.Persistence.Repositories
         /// Retrieves all entities from the database.
         /// </summary>
         /// <returns>A list of all entities.</returns>
-        public async Task<List<T>> GetAll()
+        public async Task<List<T>> GetAllAsync()
         {
             return await _context.Set<T>().ToListAsync();
         }
@@ -40,14 +40,9 @@ namespace IdentityUser.src.Infra.Persistence.Repositories
         /// <param name="id">The unique identifier of the entity to retrieve.</param>
         /// <returns>A task that represents the asynchronous operation. The task result contains the entity of type <typeparamref name="T"/>.</returns>
         /// <exception cref="KeyNotFoundException">Thrown when an entity with the specified ID is not found.</exception>
-        public async Task<T> GetById(Guid id)
+        public async Task<T?> GetByIdAsync(Guid id)
         {
-            var user = await _context.Set<T>().FirstOrDefaultAsync(x => x.Id == id);
-            if (user == null)
-            {
-                throw new KeyNotFoundException($"Entidade com o ID '{id}' não foi encontrada.");
-            }
-            return user;
+            return await _context.Set<T>().FirstOrDefaultAsync(x => x.Id == id);
         }
 
         /// <summary>
@@ -55,7 +50,7 @@ namespace IdentityUser.src.Infra.Persistence.Repositories
         /// </summary>
         /// <param name="entity">The entity to create.</param>
         /// <returns>The created entity.</returns>
-        public async Task<T> Create(T entity)
+        public async Task<T> CreateAsync(T entity)
         {
             await _context.Set<T>().AddAsync(entity);
             await _context.SaveChangesAsync();
@@ -68,7 +63,7 @@ namespace IdentityUser.src.Infra.Persistence.Repositories
         /// </summary>
         /// <param name="entity">The entity to update.</param>
         /// <returns>The updated entity.</returns>
-        public async Task<T> Update(T entity)
+        public async Task<T> UpdateAsync(T entity)
         {
             _context.Set<T>().Update(entity);
             await _context.SaveChangesAsync();
@@ -81,7 +76,7 @@ namespace IdentityUser.src.Infra.Persistence.Repositories
         /// </summary>
         /// <param name="id">The ID of the entity to delete.</param>
         /// <returns>A boolean indicating whether the deletion was successful.</returns>
-        public async Task<bool> Delete(Guid id)
+        public async Task<bool> DeleteAsync(Guid id)
         {
             var entity = await _context.Set<T>().FirstOrDefaultAsync(x => x.Id == id);
 

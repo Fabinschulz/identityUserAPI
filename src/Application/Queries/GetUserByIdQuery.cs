@@ -1,6 +1,6 @@
-﻿using System.Text.Json.Serialization;
-using IdentityUser.src.Domain.Common;
+﻿using IdentityUser.src.Domain.Common;
 using IdentityUser.src.Domain.Enums;
+using System.Text.Json.Serialization;
 
 namespace IdentityUser.src.Application.Queries
 {

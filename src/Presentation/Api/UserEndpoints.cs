@@ -37,9 +37,9 @@ namespace IdentityUser.src.Presentation.Api
             }).WithTags("USER").WithSummary("Login a user");
 
 
-            app.MapPut("/v1/user/{id}", async (IMediator mediator, IDistributedCacheService cache, Guid id, [FromBody] UpdateUserCommand command) =>
+            app.MapPut("/v1/user/{id}", async (IMediator mediator, IDistributedCacheService cache, Guid id, [FromBody] User command) =>
             {
-                var updatedCommand = new UpdateUserCommand(id, command.Username, command.Email, command.Role, command.IsDeleted);
+                var updatedCommand = new UpdateUserCommand(id, command);
                 var user = await mediator.Send(updatedCommand);
                 await cache.InvalidateCacheAsync($"User_GetById_{id}");
                 await cache.InvalidateCacheAsync("Users_GetAll");

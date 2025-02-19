@@ -2,7 +2,7 @@
 using IdentityUser.src.Application.Command;
 using IdentityUser.src.Domain.Common;
 using IdentityUser.src.Domain.Entities;
-using IdentityUser.src.Domain.Interfaces.Repositories;
+using IdentityUser.src.Domain.Services;
 using MediatR;
 
 namespace IdentityUser.src.Application.Handler
@@ -12,19 +12,19 @@ namespace IdentityUser.src.Application.Handler
     /// </summary>
     public sealed class GetAllUserHandler : IRequestHandler<GetAllUserCommand, ListDataPagination<User>>
     {
-        private readonly IUserRepository _userRepository;
+        private readonly UserServices _userService;
         private readonly IValidator<GetAllUserCommand> _validator;
         private readonly ILogger<GetAllUserHandler> _logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GetAllUserHandler"/> class.
         /// </summary>
-        /// <param name="userRepository">The user repository.</param>
+        /// <param name="userServices">The user repository.</param>
         /// <param name="validator">The validator for the command.</param>
         /// <param name="logger">The logger.</param>
-        public GetAllUserHandler(IUserRepository userRepository, IValidator<GetAllUserCommand> validator, ILogger<GetAllUserHandler> logger)
+        public GetAllUserHandler(UserServices userServices, IValidator<GetAllUserCommand> validator, ILogger<GetAllUserHandler> logger)
         {
-            _userRepository = userRepository;
+            _userService = userServices;
             _validator = validator;
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
@@ -47,18 +47,15 @@ namespace IdentityUser.src.Application.Handler
                 throw new ValidationException(validationResult.Errors);
             }
 
-            var users = await _userRepository.GetAll(
-                request.Page,
-                request.Size,
-                request.Username,
-                request.Email,
-                request.IsDeleted,
-                request.OrderBy,
-                request.Role
-                );
-
-            _logger.LogInformation("Handling {Request}", request);
-            return users;
+            try
+            {
+                return await _userService.GetAllUserAsync(request.Page, request.Size, request.Username, request.Email, request.IsDeleted, request.OrderBy, request.Role);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError("Error in Command {CommandName} - {Error}", request.GetType().Name, e.Message);
+                throw new Exception("Error: " + e.Message);
+            }
         }
     }
 }

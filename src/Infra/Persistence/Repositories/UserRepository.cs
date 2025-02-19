@@ -86,6 +86,16 @@ namespace IdentityUser.src.Infra.Persistence.Repositories
         }
 
         /// <summary>
+        /// Retrieves a user by their email address.
+        /// </summary>
+        /// <param name="email">The email address of the user to retrieve.</param>
+        /// <returns>A task that represents the asynchronous operation. The task result contains the user if found; otherwise, null.</returns>
+        public async Task<User?> GetUserByEmail(string email)
+        {
+            return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+        }
+
+        /// <summary>
         /// Logs in a user with the specified email and password.
         /// </summary>
         /// <param name="email">The email of the user.</param>
@@ -125,26 +135,15 @@ namespace IdentityUser.src.Infra.Persistence.Repositories
             return loggedUser;
         }
 
-        private async Task<User?> GetUserByEmail(string email)
-        {
-            return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
-        }
-
         /// <summary>
         /// Registers a new user.
         /// </summary>
         /// <param name="user">The user to register.</param>_
         public async Task<User> Register(User user)
         {
-            var existingUser = await GetUserByEmail(user.Email);
-
-            if (existingUser != null)
-            {
-                throw new BadRequestException(new[] { "Usuário já existe com este email." });
-            }
-
             await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
+            await Task.CompletedTask;
             return user;
         }
 
@@ -164,7 +163,7 @@ namespace IdentityUser.src.Infra.Persistence.Repositories
         /// <param name="orderBy">The field to order by.</param>
         /// <param name="role">The role to filter by.</param>
         /// <returns>The paginated list of users.</returns>
-        public async Task<ListDataPagination<User>> GetAll(int page, int size, string? username, string? email, bool isDeleted, string? orderBy, RoleEnum? role)
+        public async Task<ListDataPagination<User>> GetAllAsync(int page, int size, string? username, string? email, bool isDeleted, string? orderBy, RoleEnum? role)
         {
             var query = BuildBaseQuery();
 

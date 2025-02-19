@@ -45,5 +45,20 @@ namespace IdentityUser.src.Domain.Entities
             Email = email;
             Password = password;
         }
+
+        /// <summary>
+        /// Updates the user's information.
+        /// </summary>
+        /// <param name="username">The new username of the user. Can be null.</param>
+        /// <param name="email">The new email address of the user.</param>
+        /// <param name="role">The new role of the user. Can be null.</param>
+        /// <param name="isDeleted">Indicates whether the user is deleted.</param>
+        public void Update(string? username, string email, RoleEnum? role, bool isDeleted)
+        {
+            Username = username;
+            Email = email;
+            Role = role;
+            IsDeleted = isDeleted;
+        }
     }
 }

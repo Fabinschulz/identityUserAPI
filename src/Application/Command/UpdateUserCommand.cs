@@ -1,8 +1,7 @@
 ﻿using FluentValidation;
 using IdentityUser.src.Application.Queries;
-using IdentityUser.src.Domain.Enums;
+using IdentityUser.src.Domain.Entities;
 using MediatR;
-using System.Text.Json.Serialization;
 
 namespace IdentityUser.src.Application.Command
 {
@@ -10,16 +9,10 @@ namespace IdentityUser.src.Application.Command
     /// Command to update a user's information.
     /// </summary>
     /// <param name="Id">The unique identifier of the user.</param>
-    /// <param name="Username">The username of the user.</param>
-    /// <param name="Email">The email address of the user.</param>
-    /// <param name="Role">The role of the user, converted using <see cref="RoleEnumConverter"/>.</param>
-    /// <param name="IsDeleted">Indicates whether the user is marked as deleted.</param>
+    /// <param name="user">The user to be updated.</param>
     public sealed record UpdateUserCommand(
         Guid Id,
-        string Username,
-        string Email,
-        [property: JsonConverter(typeof(RoleEnumConverter))] RoleEnum Role,
-        bool IsDeleted
+        User user
     ) : IRequest<UpdateUserQuery>;
 
     /// <summary>
@@ -33,9 +26,12 @@ namespace IdentityUser.src.Application.Command
         public UpdateUserValidator()
         {
             RuleFor(x => x.Id).NotEmpty();
-            RuleFor(x => x.Username).NotEmpty().MaximumLength(50);
-            RuleFor(x => x.Email).NotEmpty().EmailAddress();
-            //RuleFor(x => x.Role).NotEmpty().IsInEnum();
+            RuleFor(x => x.user).NotNull().ChildRules(user =>
+            {
+                user.RuleFor(x => x.Username).NotEmpty().MaximumLength(50);
+                user.RuleFor(x => x.Email).NotEmpty().EmailAddress();
+                user.RuleFor(x => x.Role).IsInEnum();
+            });
         }
     }
 }

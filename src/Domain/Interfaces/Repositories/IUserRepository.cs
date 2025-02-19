@@ -22,7 +22,7 @@ namespace IdentityUser.src.Domain.Interfaces.Repositories
         /// <param name="OrderBy">The field to order by.</param>
         /// <param name="role">The role to filter by.</param>
         /// <returns>A paginated list of users.</returns>
-        Task<ListDataPagination<User>> GetAll(int Page, int Size, string? Username, string? Email, bool IsDeleted, string? OrderBy, RoleEnum? role);
+        Task<ListDataPagination<User>> GetAllAsync(int Page, int Size, string? Username, string? Email, bool IsDeleted, string? OrderBy, RoleEnum? role);
 
         /// <summary>
         /// Retrieves the authenticated user based on the provided claims principal.
@@ -62,6 +62,11 @@ namespace IdentityUser.src.Domain.Interfaces.Repositories
         /// <returns>The user for whom the password reset was initiated.</returns>
         Task<User> ForgotPassword(string email);
 
-
+        /// <summary>
+        /// Retrieves a user by their email address.
+        /// </summary>
+        /// <param name="email">The email address of the user to retrieve.</param>
+        /// <returns>A task that represents the asynchronous operation. The task result contains the user if found; otherwise, null.</returns>
+        Task<User?> GetUserByEmail(string email);
     }
 }
