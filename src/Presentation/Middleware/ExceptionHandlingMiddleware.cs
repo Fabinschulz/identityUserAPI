@@ -41,6 +41,15 @@ namespace IdentityUser.src.Presentation.Middleware
             var message = "Ocorreu um erro interno no servidor.";
             var errors = new string[] { };
 
+            // Captura a exceção no Sentry com contexto adicional
+            SentrySdk.ConfigureScope(scope =>
+            {
+                scope.SetTag("http.status_code", ((int)statusCode).ToString());
+                scope.SetExtra("errors", errors);
+                scope.SetExtra("request_path", context.Request.Path);
+                SentrySdk.CaptureException(exception);
+            });
+
             // Tratar exceções específicas
             switch (exception)
             {

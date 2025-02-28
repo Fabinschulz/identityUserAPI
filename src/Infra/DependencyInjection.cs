@@ -172,9 +172,28 @@ namespace IdentityUser.src.Infra
         /// </summary>
         /// <param name="services">The service collection to add the Redis cache to.</param>
         /// <param name="configuration">The application configuration containing the Redis connection string.</param>
-        public static void Redis(this IServiceCollection services, IConfiguration configuration)
+        public static void AddRedis(this IServiceCollection services, IConfiguration configuration)
         {
-                services.AddRedis(configuration);
+            ElastiCacheRedis.RedisCache(services, configuration);
+        }
+
+        /// <summary>
+        /// Adds Sentry monitoring to the web application builder.
+        /// </summary>
+        /// <param name="builder">The <see cref="WebApplicationBuilder"/> to configure.</param>
+        /// <param name="configuration">The application's configuration settings.</param>
+        public static void AddSentryMonitoring(this WebApplicationBuilder builder, IConfiguration configuration)
+        {
+            var sentryDsn = configuration["Sentry:Dsn"];
+
+            builder.WebHost.UseSentry(o =>
+            {
+                o.Dsn = sentryDsn;
+                o.Debug = builder.Environment.IsDevelopment();
+                o.TracesSampleRate = 1.0;
+            });
+
+            builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         }
     }
 }

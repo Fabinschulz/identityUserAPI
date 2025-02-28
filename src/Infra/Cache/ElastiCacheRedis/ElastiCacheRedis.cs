@@ -14,7 +14,7 @@ namespace IdentityUser.src.Infra.Cache.ElastiCacheRedis
         /// <param name="configuration">The configuration containing the Redis endpoint.</param>
         /// <exception cref="ArgumentException">Thrown when the Redis endpoint configuration is missing or empty.</exception>
         /// <exception cref="Exception">Thrown when there is an error connecting to Redis.</exception>
-        public static void AddRedis(this IServiceCollection services, IConfiguration configuration)
+        public static void RedisCache(this IServiceCollection services, IConfiguration configuration)
         {
             var redisEndpoint = configuration["Redis"];
 

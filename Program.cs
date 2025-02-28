@@ -13,12 +13,21 @@ builder.AddSwaggerDoc();
 builder.AddAuthPolicy();
 builder.AddAuthJwt();
 builderServices.ConfigureServices();
-builderServices.Redis(builder.Configuration);
+builderServices.AddRedis(builder.Configuration);
 
 var app = builder.Build();
 
 var options = new RewriteOptions().AddRedirect("^$", "swagger/index.html");
 app.UseRewriter(options);
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+}
+else
+{
+    app.UseSentryTracing();
+}
 
 app.UseSwagger();
 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "User Api v1"));
