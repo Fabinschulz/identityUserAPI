@@ -4,6 +4,7 @@ using IdentityUser.src.Domain.Enums;
 using IdentityUser.src.Domain.Interfaces.Repositories;
 using IdentityUser.src.Domain.Services;
 using IdentityUser.src.Infra.Cache.DistributedCache;
+using IdentityUser.src.Infra.Cache.ElastiCacheRedis;
 using IdentityUser.src.Infra.Persistence.Database;
 using IdentityUser.src.Infra.Persistence.Repositories;
 using IdentityUser.src.Infra.Settings;
@@ -173,12 +174,7 @@ namespace IdentityUser.src.Infra
         /// <param name="configuration">The application configuration containing the Redis connection string.</param>
         public static void Redis(this IServiceCollection services, IConfiguration configuration)
         {
-            var redisConnectionString = configuration["Redis"];
-            services.AddStackExchangeRedisCache(options =>
-            {
-                options.Configuration = redisConnectionString;
-                options.InstanceName = "IDENTITY_";
-            });
+                services.AddRedis(configuration);
         }
     }
 }
